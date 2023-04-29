@@ -1,15 +1,27 @@
 <script>
+import { store } from '../store.js';
 export default {
+    components:{
+    },
     data(){
-        return {}
+        return {
+            store
+        }
+    },
+    methods:{
     }
 }
 </script>
 
 <template>
-    <aside class="bg-transparent w-full min-h-[calc(100vh-60px)] lg:w-3/12 lg:min-h-0 fixed top-0 left-0 lg:relative">
-        <div class="bg-[#1895B0]/90 shadow-md shadow-black/40 lg:shadow-none lg:rounded-br-lg w-[70%] md:w-[35%] min-h-[calc(100vh-60px)] lg:min-h-0 lg:w-full lg:bg-[#08738A]/75">
-
+    <aside @click="store.toggleDrawer()"
+        :class="!store.isDrawerOpen ? '-left-full' : 'left-0'"
+        class="w-full lg:left-0 lg:mt-3 h-[calc(100vh-60px)] transition-[left] ease-out duration-300 lg:w-3/12 lg:min-h-0 fixed z-50 top-0 lg:relative"
+        >
+        <div class="bg-[#1895B0]/90 lg:bg-white lg:shadow p-3 lg:ml-3 rounded-lg w-[70%] md:w-[35%] min-h-[calc(100vh-60px)] lg:min-h-0 lg:w-full lg:bg-[#08738A]/75">
+            <div class="relative left-0 top-[100px] lg:static flex flex-col gap-1">
+                <slot/>
+            </div>
         </div>
     </aside>
 </template>

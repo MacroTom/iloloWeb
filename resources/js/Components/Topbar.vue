@@ -14,7 +14,7 @@ export default {
 
 <template>
     <div
-        class="w-full min-h-[60px] shadow-lg shadow-black/80 bg-[#08738A] hidden lg:flex justify-between items-center px-8"
+        class="w-full fixed top-0 left-0 z-10 min-h-[60px] bg-[#08738A] hidden lg:flex justify-between items-center px-8"
         >
         <div class="flex items-center">
             <img width="80" src="/images/logo.png" alt="logo"/>
