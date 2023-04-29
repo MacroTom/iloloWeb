@@ -4,16 +4,17 @@ on:
       - main
 name: 🚀 Deploy website on push
 jobs:
-  web-deploy:
+  deploy_job:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v3
-
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.ftp_server }}
-        username: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_password }}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: deploy file
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.ftp_server }}
+          port: '21'
+          username: ${{ secrets.ftp_username }}
+          password: ${{ secrets.ftp_password }}
+          sftp_only: true
