@@ -4,9 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    {{-- <link rel="stylesheet" href="/build/assets/app-1e388d61.css">
-    <script src="/build/assets/app-826921d8.js" module></script> --}}
-    @vite('resources/js/app.js')
+    @if (config("app.env") !== "local")
+        <link rel="stylesheet" href="/build/{{getAssets()['css']}}">
+        <script src="/build/{{getAssets()['js']}}" type="module"></script>
+    @else
+        @vite('resources/js/app.js')
+    @endif
     @inertiaHead
   </head>
   <body>

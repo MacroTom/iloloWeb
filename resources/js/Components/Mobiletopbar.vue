@@ -1,14 +1,28 @@
 <script>
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { store } from '../store.js';
+import Formtab from './Form.vue';
+import Statusbutton from './Statusbutton.vue';
 export default {
+    props:{
+        back: String
+    },
     components:{
-        Link
+        Link,
+        Formtab,
+        Statusbutton
     },
     data(){
         return {
-            store
+            store,
         }
+    },
+    methods:{
+        goto(to){
+            router.get(to);
+        }
+    },
+    mounted(){
     }
 }
 </script>
@@ -17,15 +31,23 @@ export default {
     <div
         class="w-full min-h-[40px] fixed top-0 left-0 z-10 bg-[#1895B0] flex lg:hidden justify-between items-center px-3"
         >
-        <div @click="store.toggleDrawer()"
+        <div v-if="!back" @click="store.toggleDrawer()"
             class="flex justify-center items-center text-[#d9d9d9] select-none">
             <i class='bx bx-menu text-3xl font-normal'></i>
         </div>
+        <div v-else @click="goto(back)"
+            class="flex justify-center items-center text-[#d9d9d9] select-none">
+            <i class='bx bx-chevron-left text-3xl font-normal'></i>
+        </div>
         <div class="flex items-center">
-            <img width="80" src="/images/logo.png" alt="logo"/>
+            <Link href="/">
+                <img width="80" src="/images/logo.png" alt="logo"/>
+            </Link>
         </div>
-        <div class="rounded-full flex justify-center items-center gap-4 w-8 h-8 bg-[#d9d9d9] text-slate-600">
-            <i class='bx bx-user text-xl'></i>
-        </div>
+        <Statusbutton @click="!$page.props.auth.user && store.toggleFormTab()"
+            icon="bx-user"
+            :menu="$page.props.auth.user ? store.menu : null"
+            />
+        <Formtab/>
     </div>
 </template>
