@@ -10,10 +10,10 @@ export default{
 </script>
 
 <template>
-    <div :class="chat?.position?.toLowerCase() === 'left' ? 'rounded-br-lg bg-slate-50' : 'rounded-bl-lg bg-[#1895B0]/70 text-white self-end'"
-        class="max-w-xs p-3 rounded-t-lg"
+    <div :class="chat?.position?.toLowerCase() === 'left' ? 'rounded-br-lg bg-slate-50' : 'rounded-bl-lg bg-[#1895B0]/70 text-white self-end items-end'"
+        class="max-w-xs p-3 rounded-t-lg flex flex-col gap-y-2"
         >
-        <div class="text-xs">
+        <div class="w-full text-xs">
             {{ chat?.text }}
         </div>
         <small class="text-[10px]">

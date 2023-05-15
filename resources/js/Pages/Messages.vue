@@ -45,7 +45,7 @@ export default{
     <Head>
         <title>Messages</title>
     </Head>
-    <Heading back="/profile"/>
+    <Heading back="/"/>
     <section class="h-[calc(100vh-40px)] lg:h-[calc(100vh-60px)] relative top-[40px] lg:top-[60px] flex items-start px-2 pt-6 pb-16 lg:p-8">
         <aside
             :class="(store.chatOpen && store.device.screen === 'mobile') ? 'hidden' : 'block'"

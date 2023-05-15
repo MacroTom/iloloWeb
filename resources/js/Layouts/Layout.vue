@@ -21,7 +21,15 @@ export default{
         }
     },
     mounted(){
-        document.body.classList.add('bg-[#C7D1D3]');
+        const body = document.body;
+        var classval;
+        for (let index = 0; index < body.classList.length; index++) {
+            classval = body.classList[index];
+            if(classval.includes('bg-')){
+                body.classList.remove(classval);
+            }
+        }
+        body.classList.add('bg-[#C7D1D3]');
     },
     methods:{
     }

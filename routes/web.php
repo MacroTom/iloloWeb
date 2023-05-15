@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdvertController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -37,4 +38,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/profile/messages', [AccountController::class, 'messages']);
     Route::get('/profile/premiumservices', [AccountController::class, 'premium']);
     Route::post('/logout', [AccountController::class, 'logout']);
+});
+
+Route::middleware('auth')->prefix('admin')->group(function(){
+    Route::get('/dashboard', [DashboardController::class, 'index']);
 });
