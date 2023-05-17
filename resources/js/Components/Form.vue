@@ -80,6 +80,39 @@ export default{
             }
             );
         },
+        sendotp(){
+            this.processing = true;
+            router.post('/sendotp', this.form,
+            {
+                onSuccess: (res) => {
+                    store.setAlertMessage('OTP has been sent!','success');
+                    this.processing = false;
+                    this.otpSent = true;
+                },
+                onError: (err) => {
+                    store.setAlertMessage(`${err.email}!`,'error');
+                    this.processing = false;
+                },
+            },
+            );
+        },
+        resetPassword(){
+            this.processing = true;
+            router.post('/resetpassword', this.form,
+            {
+                onSuccess: (res) => {
+                    store.setAlertMessage('Password has been reset!','success');
+                    this.processing = false;
+                    store.setFormScreen('signin');
+                },
+                onError: (err) => {
+                    store.setAlertMessage(`${err.message}!`,'error');
+                    this.processing = false;
+                },
+            },
+
+            );
+        }
     },
     mounted(){
     }
@@ -92,26 +125,26 @@ export default{
         :index="index"
     />
     <section :class="store.showFormTab ? 'flex' : 'hidden'"
-        class="fixed top-0 left-0 w-screen h-screen bg-black/50 z-50 flex-col justify-center items-center select-none">
+        class="fixed top-0 left-0 z-50 flex-col items-center justify-center w-screen h-screen select-none bg-black/50">
 
         <!-- Options -->
         <div v-show="store.formscreen === 'options'"
             class="w-11/12 min-h-[300px] md:w-6/12 lg:w-4/12 xl:w-3/12 p-4 bg-white rounded-lg"
             >
             <div class="flex justify-between">
-                <p class="font-medium text-sm text-black/90 lg:text-lg mx-4 mt-4 mb-6 self-center">{{ store.formaction === 'signin' ? 'Sign in' : 'Register' }}</p>
+                <p class="self-center mx-4 mt-4 mb-6 text-sm font-medium text-black/90 lg:text-lg">{{ store.formaction === 'signin' ? 'Sign in' : 'Register' }}</p>
                 <div @click="store.toggleFormTab()"
-                    class="w-8 h-8 rounded-full flex self-start justify-center items-center lg:hover:bg-slate-50 lg:cursor-pointer">
-                    <i class='bx bx-x text-2xl select-none pointer-events-none text-black/50'></i>
+                    class="flex items-center self-start justify-center w-8 h-8 rounded-full lg:hover:bg-slate-50 lg:cursor-pointer">
+                    <i class='text-2xl pointer-events-none select-none bx bx-x text-black/50'></i>
                 </div>
             </div>
             <div class="flex justify-center gap-2">
-                <button class="w-6/12 lg:w-5/12  rounded-lg border py-2 flex justify-center items-center gap-2 lg:cursor-pointer font-medium">
-                    <i class='bx bxl-google text-lg'></i>
+                <button class="flex items-center justify-center w-6/12 gap-2 py-2 font-medium border rounded-lg lg:w-5/12 lg:cursor-pointer">
+                    <i class='text-lg bx bxl-google'></i>
                     <span>Google</span>
                 </button>
                 <button class="w-6/12 lg:w-5/12 rounded-lg border py-2 flex justify-center items-center gap-2 lg:cursor-pointer font-medium bg-[#0B4294]/75 text-white">
-                    <i class='bx bxl-facebook text-lg'></i>
+                    <i class='text-lg bx bxl-facebook'></i>
                     <span>Facebook</span>
                 </button>
             </div>
@@ -129,7 +162,7 @@ export default{
                     Register via email or phone
                 </button>
             </div>
-            <div class="flex justify-center items-center mb-4">
+            <div class="flex items-center justify-center mb-4">
                 <label>
                     <span class="text-sm">
                         {{ store.formaction === 'signin' ? 'Don\'t have an account?' : 'Already have an account?' }}
@@ -162,15 +195,15 @@ export default{
             <!-- Sign in form -->
             <section v-show="store.formscreen === 'signin'">
                 <div class="flex justify-between mx-4 mt-4 mb-4">
-                    <p class="font-medium text-sm lg:text-lg text-black/70 self-center">Sign in via email or phone</p>
+                    <p class="self-center text-sm font-medium lg:text-lg text-black/70">Sign in via email or phone</p>
                     <div @click="store.toggleFormTab()"
-                        class="w-8 h-8 rounded-full flex self-start justify-center items-center lg:hover:bg-slate-100 lg:cursor-pointer">
-                        <i class='bx bx-x text-2xl select-none pointer-events-none text-black/50'></i>
+                        class="flex items-center self-start justify-center w-8 h-8 rounded-full lg:hover:bg-slate-100 lg:cursor-pointer">
+                        <i class='text-2xl pointer-events-none select-none bx bx-x text-black/50'></i>
                     </div>
                 </div>
                 <section class="p-4">
-                    <div class="border mb-4 p-2 rounded-lg">
-                        <input v-model="form.emailorphone" class="w-full h-full outline-none pl-1 text-sm" type="text" placeholder="Email or phone"/>
+                    <div class="p-2 mb-4 border rounded-lg">
+                        <input v-model="form.emailorphone" class="w-full h-full pl-1 text-sm outline-none" type="text" placeholder="Email or phone"/>
                     </div>
                     <Passwordinput @keyup.enter="signin" v-model="form.password" placeholder="Password"/>
                     <div class="mb-2 text-right">
@@ -189,7 +222,7 @@ export default{
                             Sign in
                         </button>
                     </div>
-                    <div class="flex justify-center items-center mb-4">
+                    <div class="flex items-center justify-center mb-4">
                         <label>
                             <span class="text-sm">
                                 Don't have an account?
@@ -202,12 +235,12 @@ export default{
                         </label>
                     </div>
                     <div class="flex justify-center gap-2">
-                        <button class="w-6/12 lg:w-5/12  rounded-lg border py-2 flex justify-center items-center gap-2 lg:cursor-pointer font-medium">
-                            <i class='bx bxl-google text-lg'></i>
+                        <button class="flex items-center justify-center w-6/12 gap-2 py-2 font-medium border rounded-lg lg:w-5/12 lg:cursor-pointer">
+                            <i class='text-lg bx bxl-google'></i>
                             <span>Google</span>
                         </button>
                         <button class="w-6/12 lg:w-5/12 rounded-lg border py-2 flex justify-center items-center gap-2 lg:cursor-pointer font-medium bg-[#0B4294]/75 text-white">
-                            <i class='bx bxl-facebook text-lg'></i>
+                            <i class='text-lg bx bxl-facebook'></i>
                             <span>Facebook</span>
                         </button>
                     </div>
@@ -217,27 +250,27 @@ export default{
             <!-- Register form -->
             <section v-show="store.formscreen === 'register'">
                 <div class="flex justify-between m-4">
-                    <p class="font-medium text-sm lg:text-lg text-black/70 self-center">Register with email and phone</p>
+                    <p class="self-center text-sm font-medium lg:text-lg text-black/70">Register with email and phone</p>
                     <div @click="store.toggleFormTab()"
-                        class="w-8 h-8 rounded-full flex self-start justify-center items-center lg:hover:bg-slate-50 lg:cursor-pointer">
-                        <i class='bx bx-x text-2xl select-none pointer-events-none text-black/50'></i>
+                        class="flex items-center self-start justify-center w-8 h-8 rounded-full lg:hover:bg-slate-50 lg:cursor-pointer">
+                        <i class='text-2xl pointer-events-none select-none bx bx-x text-black/50'></i>
                     </div>
                 </div>
                 <section class="p-4">
-                    <div class="border mb-2 p-2 rounded-lg">
-                        <input v-model="form.email" class="w-full h-full outline-none pl-1 text-sm" type="email" placeholder="Email*"/>
+                    <div class="p-2 mb-2 border rounded-lg">
+                        <input v-model="form.email" class="w-full h-full pl-1 text-sm outline-none" type="email" placeholder="Email*"/>
                         <span v-if="errors && errors.email" class="text-xs text-red-400">{{ errors.email }}</span>
                     </div>
-                    <div class="border mb-2 p-2 rounded-lg">
-                        <input v-model="form.firstname" class="w-full h-full outline-none pl-1 text-sm" type="text" placeholder="First name*"/>
+                    <div class="p-2 mb-2 border rounded-lg">
+                        <input v-model="form.firstname" class="w-full h-full pl-1 text-sm outline-none" type="text" placeholder="First name*"/>
                         <span v-if="errors && errors.firstname" class="text-xs text-red-400">{{ errors.firstname }}</span>
                     </div>
-                    <div class="border mb-2 p-2 rounded-lg">
-                        <input v-model="form.lastname" class="w-full h-full outline-none pl-1 text-sm" type="text" placeholder="Last name*"/>
+                    <div class="p-2 mb-2 border rounded-lg">
+                        <input v-model="form.lastname" class="w-full h-full pl-1 text-sm outline-none" type="text" placeholder="Last name*"/>
                         <span v-if="errors && errors.lastname" class="text-xs text-red-400">{{ errors.lastname }}</span>
                     </div>
-                    <div class="border mb-2 p-2 rounded-lg">
-                        <input v-model="form.phone" class="w-full h-full outline-none pl-1 text-sm" type="text" placeholder="Phone number*"/>
+                    <div class="p-2 mb-2 border rounded-lg">
+                        <input v-model="form.phone" class="w-full h-full pl-1 text-sm outline-none" type="text" placeholder="Phone number*"/>
                         <span v-if="errors && errors.phone" class="text-xs text-red-400">{{ errors.phone }}</span>
                     </div>
                     <Passwordinput :error="errors?.password" v-model="form.password" placeholder="Password*"/>
@@ -256,7 +289,7 @@ export default{
                             Register
                         </button>
                     </div>
-                    <div class="flex justify-center items-center mb-4">
+                    <div class="flex items-center justify-center mb-4">
                         <label>
                             <span class="text-sm">
                                 Already have an account?
@@ -269,12 +302,12 @@ export default{
                         </label>
                     </div>
                     <div class="flex justify-center gap-2">
-                        <button class="w-6/12 lg:w-5/12  rounded-lg border py-2 flex justify-center items-center gap-2 lg:cursor-pointer font-medium">
-                            <i class='bx bxl-google text-lg'></i>
+                        <button class="flex items-center justify-center w-6/12 gap-2 py-2 font-medium border rounded-lg lg:w-5/12 lg:cursor-pointer">
+                            <i class='text-lg bx bxl-google'></i>
                             <span>Google</span>
                         </button>
                         <button class="w-6/12 lg:w-5/12 rounded-lg border py-2 flex justify-center items-center gap-2 lg:cursor-pointer font-medium bg-[#0B4294]/75 text-white">
-                            <i class='bx bxl-facebook text-lg'></i>
+                            <i class='text-lg bx bxl-facebook'></i>
                             <span>Facebook</span>
                         </button>
                     </div>
@@ -284,21 +317,22 @@ export default{
             <!-- Password Reset form -->
             <section v-show="store.formscreen === 'forgot'">
                 <div class="flex justify-between mx-4 mt-2 mb-1">
-                    <p class="font-medium text-sm text-black/70 lg:text-lg self-center">Password Reset</p>
+                    <p class="self-center text-sm font-medium text-black/70 lg:text-lg">Password Reset</p>
                     <div @click="store.toggleFormTab()"
-                        class="w-8 h-8 rounded-full flex self-start justify-center items-center lg:hover:bg-slate-50 lg:cursor-pointer">
-                        <i class='bx bx-x text-2xl select-none pointer-events-none text-black/50'></i>
+                        class="flex items-center self-start justify-center w-8 h-8 rounded-full lg:hover:bg-slate-50 lg:cursor-pointer">
+                        <i class='text-2xl pointer-events-none select-none bx bx-x text-black/50'></i>
                     </div>
                 </div>
                 <section v-if="!otpSent" class="p-4">
                     <div class="mb-2">
                         <p class="text-sm font-medium text-black/80">Enter your email</p>
                     </div>
-                    <div class="border mb-2 p-2 rounded-lg">
-                        <input class="w-full h-full outline-none pl-1 text-sm" v-model="form.email" type="email" placeholder="..."/>
+                    <div class="p-2 mb-2 border rounded-lg">
+                        <input class="w-full h-full pl-1 text-sm outline-none" v-model="form.email" type="email" placeholder="..."/>
                     </div>
                     <div class="mb-2">
-                        <button :disabled="!form.email"
+                        <button :disabled="!form.email || processing"
+                            @click="sendotp"
                             class="w-full lg:w-full rounded-lg border py-3 bg-[#1895B0] disabled:bg-[#1895B0]/50 text-white font-medium text-sm"
                             >
                             Submit
@@ -311,13 +345,14 @@ export default{
                     <div class="mb-2">
                         <p class="text-xs font-medium text-black/70">An OTP has been sent to your email address</p>
                     </div>
-                    <div class="border mb-2 p-2 rounded-lg">
-                        <input class="w-full h-full outline-none pl-1 text-sm" type="text" placeholder="OTP"/>
+                    <div class="p-2 mb-2 border rounded-lg">
+                        <input class="w-full h-full pl-1 text-sm outline-none" v-model="form.otp" type="text" placeholder="OTP"/>
                     </div>
                     <Passwordinput v-model="form.new_password" placeholder="New password"/>
                     <Passwordinput v-model="form.password_confirm" placeholder="Confirm password"/>
                     <div class="mb-2">
-                        <button :disabled="!form.otp"
+                        <button :disabled="!form.otp || processing"
+                            @click="resetPassword"
                             class="w-full lg:w-full rounded-lg border py-3 bg-[#1895B0] disabled:bg-[#1895B0]/50 text-white font-medium text-sm"
                             >
                             Submit

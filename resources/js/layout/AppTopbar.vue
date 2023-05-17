@@ -2,11 +2,40 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 import { Link, router } from '@inertiajs/vue3';
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
 
 const { layoutConfig, onMenuToggle } = useLayout();
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
+const menu = ref();
+
+const items = [
+                {
+                    items: [
+                        {
+                            label: 'Update',
+                            icon: 'pi pi-refresh',
+                            command: () => {
+                                toast.add({ severity: 'success', summary: 'Updated', detail: 'Data Updated', life: 3000 });
+                            }
+                        },
+                        {
+                            label: 'Delete',
+                            icon: 'pi pi-times',
+                            command: () => {
+                                toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 });
+                            }
+                        }
+                    ]
+                }
+            ]
+
+const toggle = (event) => {
+    menu.value.toggle(event);
+};
 
 onMounted(() => {
     bindOutsideClickListener();
@@ -17,7 +46,7 @@ onBeforeUnmount(() => {
 });
 
 const logoUrl = computed(() => {
-    return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+    return `/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-green'}.png`;
 });
 
 const onTopBarMenuButton = () => {
@@ -61,9 +90,9 @@ const isOutsideClicked = (event) => {
 
 <template>
     <div class="layout-topbar">
-        <Link href="/" class="layout-topbar-logo">
-            <img src="/images/logo-green.png" style="height: 45px;" alt="logo" />
-        </Link>
+        <a href="/" class="layout-topbar-logo">
+            <img :src="logoUrl" style="height: 45px;" alt="logo" />
+        </a>
 
         <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
             <i class="pi pi-bars"></i>
@@ -78,10 +107,12 @@ const isOutsideClicked = (event) => {
                 <i class="pi pi-calendar"></i>
                 <span>Calendar</span>
             </button>
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
+            <button @click="toggle" class="p-link layout-topbar-button">
                 <i class="pi pi-user"></i>
                 <span>Profile</span>
             </button>
+            <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+            <Toast/>
             <button @click="onSettingsClick()" class="p-link layout-topbar-button">
                 <i class="pi pi-cog"></i>
                 <span>Settings</span>

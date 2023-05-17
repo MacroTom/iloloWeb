@@ -19,7 +19,7 @@ export default {
 
 <template>
     <div
-        class="w-full fixed top-0 left-0 z-10 h-[60px] bg-[#08738A] hidden lg:flex justify-between items-center px-8"
+        class="w-full fixed top-0 left-0 z-10 h-[60px] bg-[#1895B0] hidden lg:flex justify-between items-center px-8"
         >
         <div class="flex items-center">
             <Link href="/">

@@ -24,6 +24,8 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function(){
     Route::post('/register', [AccountController::class, 'store']);
     Route::post('/login', [AccountController::class, 'login']);
+    Route::post('/sendotp', [AccountController::class, 'sendOtp']);
+    Route::post('/resetpassword', [AccountController::class, 'resetPassword']);
 });
 
 Route::middleware('auth')->group(function(){
@@ -40,6 +42,13 @@ Route::middleware('auth')->group(function(){
     Route::post('/logout', [AccountController::class, 'logout']);
 });
 
-Route::middleware('auth')->prefix('admin')->group(function(){
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::prefix('admin')->group(function(){
+    Route::middleware('guest')->group(function(){
+        Route::get('/login', [DashboardController::class, 'login'])->name('admin.login');
+        Route::post('/signin', [DashboardController::class, 'signin']);
+    });
+
+    Route::middleware(['admin'])->group(function(){
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    });
 });
