@@ -44,3 +44,51 @@ body{
 *::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+.p-dialog-content{
+    @apply pt-4 !important
+}
+
+.p-chips-multiple-container{
+    @apply w-full
+}
+
+.button{
+    @apply h-[40px] rounded-lg font-medium text-sm px-4 py-2 outline-none select-none flex items-center justify-center gap-1
+}
+
+.button.primary{
+    @apply bg-[#1895B0] text-white hover:bg-[#1895B0]/60 disabled:bg-[#1895B0]/40 active:bg-[#1895B0]/50
+}
+
+.button.stroke{
+    @apply border border-slate-300 text-slate-700 hover:bg-slate-100 disabled:text-slate-400 active:bg-slate-50
+}
+
+.advert-control{
+    @apply flex flex-col gap-1 mb-6
+}
+
+.advert-control > div{
+    @apply flex items-center
+}
+
+.advert-control > ul{
+    @apply w-full max-h-[300px] overflow-y-auto bg-white rounded-lg shadow-lg p-2 absolute left-0 top-[70px] z-50
+}
+
+.advert-control > ul li{
+    @apply w-full p-2 text-slate-600 text-sm lg:cursor-pointer hover:bg-slate-100 rounded-lg
+}
+
+.advert-control input{
+    @apply h-[50px] w-full text-slate-800 border-b border-slate-400 outline-0
+}
+
+.advert-control textarea{
+    @apply h-[150px] lg:h-[100px] w-full text-sm text-slate-700 border-b border-slate-400 outline-0 resize-none
+}
+
+.advert-control > label{
+    @apply text-xs text-slate-500
+}

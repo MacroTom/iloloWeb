@@ -1,8 +1,11 @@
 <script>
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { store } from '../store.js';
 import Formtab from './Form.vue';
 export default {
+    props: {
+        auth: Object
+    },
     components:{
         Link,
         Formtab
@@ -10,6 +13,11 @@ export default {
     data(){
         return {
             store
+        }
+    },
+    methods:{
+        goTo(page){
+            router.get(page);
         }
     },
     mounted(){
@@ -28,10 +36,11 @@ export default {
         </div>
         <div class="flex items-center gap-4">
             <slot/>
-            <Link
+            <button @click="$page.props.auth?.user ? goTo('/postad') : store.toggleFormTab('signin')"
                 class="h-[35px] flex items-center bg-[#C92125]/80 text-white font-medium text-sm uppercase px-4 rounded-2xl shadow-md shadow-[#134854] hover:bg-[#C92125]/90"
-                href="/postad"
-                >Sell</Link>
+                >
+                Sell
+            </button>
         </div>
         <Formtab />
     </div>

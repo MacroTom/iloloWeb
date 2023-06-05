@@ -4,6 +4,9 @@ import { store } from '../store.js';
 import Passwordinput from './Passwordinput.vue';
 import Alert from './Alert.vue';
 export default{
+    props: {
+        flash: Object
+    },
     components:{
         Link,
         Passwordinput,
@@ -85,12 +88,12 @@ export default{
             router.post('/sendotp', this.form,
             {
                 onSuccess: (res) => {
-                    store.setAlertMessage('OTP has been sent!','success');
+                    store.setAlertMessage(res.props.flash.message,'success');
                     this.processing = false;
                     this.otpSent = true;
                 },
                 onError: (err) => {
-                    store.setAlertMessage(`${err.email}!`,'error');
+                    store.setAlertMessage(`${err?.email ? err?.email :  err?.message}!`,'error');
                     this.processing = false;
                 },
             },
@@ -353,7 +356,7 @@ export default{
                     <div class="mb-2">
                         <button :disabled="!form.otp || processing"
                             @click="resetPassword"
-                            class="w-full lg:w-full rounded-lg border py-3 bg-[#1895B0] disabled:bg-[#1895B0]/50 text-white font-medium text-sm"
+                            class="w-full lg:w-full rounded-lg py-3 bg-[#1895B0] disabled:bg-[#1895B0]/50 text-white font-medium text-sm"
                             >
                             Submit
                         </button>

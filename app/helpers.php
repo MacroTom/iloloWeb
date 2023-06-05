@@ -11,3 +11,9 @@ function getAssets(){
         ];
     }
 }
+
+function getStates(){
+    if(file_exists(base_path()."/states.json")){
+        return json_decode(file_get_contents(base_path()."/states.json"));
+    }
+}

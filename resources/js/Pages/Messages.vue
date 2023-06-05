@@ -12,14 +12,14 @@ export default{
         auth: Object
     },
     components:{
-    Tabmanager,
-    Head,
-    Heading,
-    Bottomnavigationbar,
-    Chat,
-    Chatpill,
-    Chatbubble
-},
+        Tabmanager,
+        Head,
+        Heading,
+        Bottomnavigationbar,
+        Chat,
+        Chatpill,
+        Chatbubble
+    },
     data(){
         return{
             store,
@@ -136,5 +136,4 @@ export default{
             </div>
         </main>
     </section>
-    <Bottomnavigationbar/>
 </template>

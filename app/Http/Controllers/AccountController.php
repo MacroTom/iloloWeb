@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SendOtpRequest;
 use Carbon\Carbon;
 use App\Models\Otp;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Mail\PasswordReset;
+use App\Traits\HandleResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -15,6 +18,7 @@ use Illuminate\Validation\ValidationException;
 
 class AccountController extends Controller
 {
+    use HandleResponse;
     public function store(Request $request){
         $request->validate([
             'firstname' => 'required|string',
@@ -98,81 +102,6 @@ class AccountController extends Controller
         return Inertia::render('Premium',[
 
         ]);
-    }
-
-    public function sendOtp(Request $request){
-        $request->validate( [
-            'email' => 'required|email'
-        ]);
-
-
-        // Verify if account exists with such email
-        $record = User::where('email', $request->email)->get();
-
-        if(!$record->count())
-        return redirect()->back()->withErrors(['email'=>'No account with such email!']);
-
-        $otp = mt_rand(1273,9726);
-
-        $data = [
-            'otp' => $otp
-        ];
-
-        // send email
-        Mail::to($request->email)->send(new PasswordReset($data));
-
-        Otp::where('otp', $otp)->delete();
-        Otp::where('email', $request->email)->delete();
-
-        $added = Otp::create([
-            'otp' => $otp,
-            'email' => $request->email,
-            'expires_after' => 10,
-        ]);
-
-        if (!$added) {
-            return redirect()->back()->withErrors(['email'=>'Could not send OTP!']);
-        }
-        return redirect()->back()->with('message', 'OTP has been sent!');
-    }
-
-    public function resetPassword(Request $request){
-         $this->validate($request,[
-             'otp' => 'required|numeric',
-             'email' => 'required|email',
-             'new_password' => 'required',
-             'password_confirm' => ['required', 'same:new_password'],
-         ]);
-
-         $otp = $request->otp;
-
-         if(Otp::where('otp', $otp)->value('email') != $request->email){
-            return redirect()->back()->withErrors(['message'=>'Invalid OTP!']);
-         }
-
-         $now = strtotime(Carbon::now());
-
-         $record = Otp::where('otp', $otp)->value('created_at');
-
-         if(!$record){
-            return redirect()->back()->withErrors(['message'=>'Invalid OTP!']);
-         }
-
-         $created_at = strtotime($record);
-
-         // check if token has expired
-         $difference = ($now - $created_at)/60;
-         if($difference >= 10){
-             Otp::where('otp', $otp)->delete();
-             return redirect()->back()->withErrors(['message'=>'OTP has expired!']);
-         }
-         Otp::where('otp', $otp)->delete();
-
-         $user = User::where('email', $request->email);
-
-         $user->update(['password' => Hash::make($request->new_password)]);
-
-         return redirect()->back()->with('message', 'Password has been reset!');
     }
 
     public function logout(Request $request){

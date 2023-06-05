@@ -3,16 +3,21 @@ import { ref } from 'vue';
 
 import AppMenuItem from './AppMenuItem.vue';
 
+const prefix = "/admin/";
+
 const model = ref([
     {
         label: 'Home',
-        items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+        items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: prefix+'dashboard' }]
     },
     {
         label: 'Pages',
         items: [
-            { label: 'Users', icon: 'pi pi-fw pi-user', to: '#' },
-            { label: 'Adverts', icon: 'pi pi-fw pi-chart-bar', to: '#' },
+            { label: 'Users', icon: 'pi pi-fw pi-user', to: prefix+'users' },
+            { label: 'Admins', icon: 'pi pi-fw pi-verified', to: prefix+'admins' },
+            { label: 'Adverts', icon: 'pi pi-fw pi-chart-bar', to: prefix+'adverts' },
+            { label: 'Properties', icon: 'pi pi-fw pi-th-large', to: prefix+'properties' },
+            { label: 'Transactions', icon: 'pi pi-fw pi-shopping-cart', to: '#' },
         ]
     }
 ]);

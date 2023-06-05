@@ -1,14 +1,11 @@
 <script>
-// import '@/assets/styles.scss';
 import Passwordinput from '../Components/Passwordinput.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import Toast from 'primevue/toast';
 export default{
     components:{
         Head,
         Passwordinput,
         Link,
-        Toast
     },
     data(){
         return{
@@ -76,7 +73,6 @@ export default{
         <title>Login</title>
     </Head>
     <main class="w-full h-screen flex items-center justify-center bg-[#eff3f8]">
-        <Toast/>
         <section v-if="formScreen === 'signin'" class="w-11/12 px-4 py-6 bg-white rounded-lg shadow md:w-6/12 lg:w-4/12 xl:w-3/12">
             <div class="flex justify-center mb-6">
                 <Link href="/">
