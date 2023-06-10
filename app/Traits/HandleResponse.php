@@ -35,12 +35,12 @@ trait HandleResponse
         }
     }
 
-    public function success(Request $request, String $message, $data = null):RedirectResponse
+    public function success(Request $request, String $message, $data = null)
     {
         return $this->respond($request, true, message: $message, data: $data);
     }
 
-    public function error(Request $request, String $message, $error = null, $code = 400):RedirectResponse
+    public function error(Request $request, String $message, $error = null, $code = 400)
     {
         return $this->respond($request, false, $message, error: $error, code: $code);
     }

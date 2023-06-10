@@ -10,7 +10,7 @@ use Inertia\Inertia;
 class AdvertController extends Controller
 {
     public function index(){
-        $properties = Property::latest()->get();
+        $properties = Property::latest()->with('categories')->get();
         $states = getStates();
         return Inertia::render('Adpost',[
             'properties' => $properties,

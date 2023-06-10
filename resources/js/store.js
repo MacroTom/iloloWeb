@@ -241,6 +241,23 @@ export const store = reactive({
             delete this.alertMessage[id];
         }
     },
+    snackbars:null,
+    snackbar: {
+        add:(properties)=>{
+            let id = new Date().getTime();
+            store.snackbars = {
+                id: id,
+                message: properties.message,
+                severity: properties.severity
+            }
+            setTimeout(()=>{
+                store.snackbars = null
+            },3000);
+        },
+        close:()=>{
+            store.snackbars = null
+        }
+    },
     setFormScreen(screen){
         this.formscreen = screen
     },

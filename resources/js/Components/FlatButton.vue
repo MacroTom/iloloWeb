@@ -26,7 +26,7 @@ export default{
 </script>
 
 <template>
-    <button :class="{primary: primary, stroke: stroke}" class="button" :disabled="loading">
+    <button type="button" :class="{primary: primary, stroke: stroke}" class="button" :disabled="loading">
         <span>{{ label }} </span>
         <i v-if="loading" class="bx bx-loader bx-spin text-lg"></i>
     </button>

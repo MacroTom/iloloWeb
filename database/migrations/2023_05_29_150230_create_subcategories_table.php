@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('subcategories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id');
+            $table->foreignId('category_id')->constrained()
+            ->onDelete("cascade");
             $table->string('title')->unique();
-            $table->text('image');
+            $table->text('image')->nullable();
             $table->timestamps();
         });
     }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Advert;
-use App\Models\Property;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Advert;
+use App\Models\Category;
+use App\Models\Property;
+use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -163,9 +165,11 @@ class DashboardController extends Controller
                 'properties' => Property::where('title', $request->query('q'))->get()
             ]);
         }
-        $properties = Property::latest()->get();
+        $properties = Property::latest()->with('categories')->get();
+        $categories = Category::latest()->get();
         return Inertia::render('Sections/Properties',[
-            'properties' => $properties
+            'properties' => $properties,
+            'categories' => $categories
         ]);
     }
 
@@ -173,13 +177,16 @@ class DashboardController extends Controller
         $request->validate([
             'title' => 'required|string|unique:properties',
             'propertyValues' => 'required',
+            'categories' => 'required'
         ]);
 
-        Property::create([
-            'title' => strtolower($request->title),
+        $property = Property::create([
+            'title' => $request->title,
             'label' => strtolower($request?->label),
-            'values' => strtolower(implode(",",$request?->propertyValues))
+            'values' => implode(",",$request?->propertyValues)
         ]);
+
+        $property->categories()->attach(array_map(fn($category) => $category['id'],$request->categories));
 
         return redirect()->back()->with('message', 'Property created!');
     }
@@ -192,10 +199,12 @@ class DashboardController extends Controller
         ]);
 
         $property->update([
-            'title' => strtolower($request->title),
+            'title' => $request->title,
             'label' => strtolower($request?->label),
-            'values' => strtolower(implode(",",$request?->propertyValues))
+            'values' => implode(",",$request?->propertyValues)
         ]);
+
+        $property->categories()->sync(array_map(fn($category) => $category['id'],$request->categories));
 
         return redirect()->back()->with('message', 'Property updated!');
     }
@@ -210,5 +219,115 @@ class DashboardController extends Controller
         $property->delete();
 
         return redirect()->back()->with('message', 'Property deleted!');
+    }
+
+    public function categories(Request $request){
+        if($request->query('q')){
+            $this->search = $request->query('q');
+            return Inertia::render('Sections/Categories', [
+                'categories' => Category::where('title', $request->query('q'))->get()
+            ]);
+        }
+        $categories = Category::latest()->get();
+        return Inertia::render('Sections/Categories',[
+            'categories' => $categories
+        ]);
+    }
+
+    public function addCategory(Request $request){
+        $request->validate([
+            'title' => 'required|string|unique:categories',
+        ]);
+
+        Category::create([
+            'title' => $request->title
+        ]);
+
+        return redirect()->back()->with('message', 'Category created!');
+    }
+
+    public function updateCategory(Request $request, $id){
+        $category = Category::find($id);
+
+        if(!$category) return redirect()->back()->withErrors([
+            'message' => 'Category not found!.',
+        ]);
+
+        $category->update([
+            'title' => $request->title
+        ]);
+
+        return redirect()->back()->with('message', 'Category updated!');
+    }
+
+    public function deleteCategory($id){
+        $category = Category::find($id);
+
+        if(!$category) return redirect()->back()->withErrors([
+            'message' => 'Category not found!.',
+        ]);
+
+        $category->delete();
+
+        return redirect()->back()->with('message', 'Category deleted!');
+    }
+
+    public function subcategories(Request $request){
+        if($request->query('q')){
+            $this->search = $request->query('q');
+            $categories = Category::latest()->get();
+            return Inertia::render('Sections/Subcategories', [
+                'categories' => $categories,
+                'subcategories' => Subcategory::where('title', $request->query('q'))->with('category')->get()
+            ]);
+        }
+        $subcategories = Subcategory::latest()->with('category')->get();
+        $categories = Category::latest()->get();
+        return Inertia::render('Sections/Subcategories',[
+            'categories' => $categories,
+            'subcategories' => $subcategories
+        ]);
+    }
+
+    public function addSubcategory(Request $request){
+        $request->validate([
+            'title' => 'required|string|unique:subcategories',
+            'category' => 'required',
+        ]);
+
+        $category = Category::find($request->category['id']);
+
+        $category->subcategories()->create([
+            'title' => $request->title
+        ]);
+
+        return redirect()->back()->with('message', 'Subcategory created!');
+    }
+
+    public function updateSubcategory(Request $request, $id){
+        $subcategory = Subcategory::find($id);
+
+        if(!$subcategory) return redirect()->back()->withErrors([
+            'message' => 'Subcategory not found!.',
+        ]);
+
+        $subcategory->update([
+            'title' => $request->title,
+            'category_id' => $request->category['id']
+        ]);
+
+        return redirect()->back()->with('message', 'Subcategory updated!');
+    }
+
+    public function deleteSubcategory($id){
+        $subcategory = Subcategory::find($id);
+
+        if(!$subcategory) return redirect()->back()->withErrors([
+            'message' => 'Subcategory not found!.',
+        ]);
+
+        $subcategory->delete();
+
+        return redirect()->back()->with('message', 'Subcategory deleted!');
     }
 }

@@ -15,7 +15,7 @@ class Property extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class, 'category_property');
     }
 
     protected function values(): Attribute

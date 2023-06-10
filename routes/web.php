@@ -76,5 +76,17 @@ Route::prefix('admin')->group(function(){
         Route::post('/addproperty', [DashboardController::class, 'addProperty']);
         Route::post('/updateproperty/{id}', [DashboardController::class, 'updateProperty']);
         Route::post('/deleteproperty/{id}', [DashboardController::class, 'deleteProperty']);
+
+
+        Route::get('/categories', [DashboardController::class, 'categories']);
+        Route::post('/addcategory', [DashboardController::class, 'addCategory']);
+        Route::post('/updatecategory/{id}', [DashboardController::class, 'updateCategory']);
+        Route::post('/deletecategory/{id}', [DashboardController::class, 'deleteCategory']);
+
+
+        Route::get('/subcategories', [DashboardController::class, 'subcategories']);
+        Route::post('/addsubcategory', [DashboardController::class, 'addSubcategory']);
+        Route::post('/updatesubcategory/{id}', [DashboardController::class, 'updateSubcategory']);
+        Route::post('/deletesubcategory/{id}', [DashboardController::class, 'deleteSubcategory']);
     });
 });

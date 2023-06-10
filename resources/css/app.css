@@ -49,12 +49,24 @@ body{
     @apply pt-4 !important
 }
 
+.p-chips{
+    @apply min-h-[40px]
+}
+
+.p-chips.disabled .p-chips-input-token > input{
+    @apply hidden !important
+}
+
 .p-chips-multiple-container{
     @apply w-full
 }
 
+.dragover{
+    @apply bg-[#1895B0]/10 border-[#1895B0]/70 border-solid !important
+}
+
 .button{
-    @apply h-[40px] rounded-lg font-medium text-sm px-4 py-2 outline-none select-none flex items-center justify-center gap-1
+    @apply h-[40px] rounded-lg shadow font-medium text-sm px-4 py-2 outline-none select-none flex items-center justify-center gap-1
 }
 
 .button.primary{
@@ -83,6 +95,18 @@ body{
 
 .advert-control input{
     @apply h-[50px] w-full text-slate-800 border-b border-slate-400 outline-0
+}
+
+.advert-control.hasError input {
+    @apply border-red-300 !important
+}
+
+.advert-control.hasError textarea {
+    @apply border-red-300 !important
+}
+
+.advert-control.hasError label {
+    @apply text-red-300 !important
 }
 
 .advert-control textarea{

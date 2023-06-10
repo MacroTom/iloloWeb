@@ -17,7 +17,9 @@ const model = ref([
             { label: 'Admins', icon: 'pi pi-fw pi-verified', to: prefix+'admins' },
             { label: 'Adverts', icon: 'pi pi-fw pi-chart-bar', to: prefix+'adverts' },
             { label: 'Properties', icon: 'pi pi-fw pi-th-large', to: prefix+'properties' },
+            { label: 'Categories', icon: 'pi pi-fw pi-list', to: prefix+'categories' },
             { label: 'Transactions', icon: 'pi pi-fw pi-shopping-cart', to: '#' },
+            { label: 'Subcategories', icon: 'pi pi-fw pi-list', to: prefix+'subcategories' },
         ]
     }
 ]);

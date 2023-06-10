@@ -20,6 +20,15 @@ class Category extends Model
 
     public function properties(): BelongsToMany
     {
-        return $this->belongsToMany(Property::class);
+        return $this->belongsToMany(Property::class, 'category_property');
+    }
+
+    public function adverts(): HasMany
+    {
+        return $this->hasMany(Advert::class);
+    }
+
+    public function advertsCount(){
+        return $this->adverts()->count();
     }
 }
