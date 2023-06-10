@@ -1,5 +1,5 @@
 <script>
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import draggable from 'vuedraggable';
 import { store } from '../store.js';
 import Heading from '../Components/Heading.vue';
@@ -246,11 +246,29 @@ export default{
                 this.loading.continue = false;
             }
         },
+        submitForm(){
+            router.post('postad/', this.form,
+            {
+                onSuccess: (res) => {
+                    this.clearForm();
+                    this.loading.continue = false;
+                    this.currentTimeline += 2;
+                },
+                onError: (err) => {
+                    this.store.snackbar.add({
+                        message: err.message,
+                        severity: "error"
+                    });
+                    this.loading.continue = false;
+                },
+            },
+            );
+        },
         gallery(){
             this.loading.continue = true;
             if (this.checkForRequiredFields('gallery')) {
-                this.loading.continue = false;
                 if(this.form.photos.length < 3){
+                    this.loading.continue = false;
                     this.store.snackbar.add({
                         message: "Please upload up to three photos!",
                         severity: "warning"
@@ -258,7 +276,7 @@ export default{
                 }
                 else{
                     // Submit the form
-                    this.currentTimeline += 2;
+                    this.submitForm();
                 }
             }
             else{

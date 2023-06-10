@@ -38,6 +38,7 @@ Route::middleware('guest')->group(function(){
 
 Route::middleware('auth')->group(function(){
     Route::get('/postad', [AdvertController::class, 'index']);
+    Route::post('/postad', [AdvertController::class, 'store']);
 
     Route::get('/profile', [AccountController::class, 'profile']);
     Route::get('/profile/ads/active', [AccountController::class, 'active']);

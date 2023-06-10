@@ -19,13 +19,12 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->nullable();
             $table->text('description');
-            $table->string('type');
             $table->double('price')->default(0);
             $table->boolean('negotiable')->default(false);
             $table->string('state');
             $table->string('lga');
             $table->text('properties');
-            $table->enum('status',['active','review','closed']);
+            $table->enum('status',['active','review','closed'])->default('review');
             $table->timestamps();
         });
     }
