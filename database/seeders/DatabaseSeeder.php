@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Esieba',
             'email' => 'okecoc1@gmail.com',
             'phone' => '09078533114',
+            'avatar' => 'https://lineone.piniastudio.com/images/avatar/avatar-12.jpg',
             'role' => 1,
             'password' => Hash::make('test1234'),
         ]);

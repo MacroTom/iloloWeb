@@ -42,6 +42,6 @@ export default {
                 Sell
             </button>
         </div>
-        <Formtab />
+        <!-- <Formtab /> -->
     </div>
 </template>

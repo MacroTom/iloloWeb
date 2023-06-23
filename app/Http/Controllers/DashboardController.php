@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Plan;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Advert;
@@ -146,13 +147,12 @@ class DashboardController extends Controller
         if($request->query('q')){
             $this->search = $request->query('q');
             return Inertia::render('Sections/Adverts', [
-                'adverts' => Advert::where('state', $request->query('q'))
+                'adverts' => Advert::where('state', 'like', '%'. $this->search .'%')
                     ->orWhere('lga', 'like', '%'. $this->search .'%')
-                    ->orWhere('title', 'like', '%'. $this->search .'%')
-                    ->orWhere('brand', 'like', '%'. $this->search .'%')->get()
+                    ->orWhere('title', 'like', '%'. $this->search .'%')->with('images')->get()
             ]);
         }
-        $adverts = Advert::where('role', 1)->paginate(6);
+        $adverts = Advert::latest()->with('images')->paginate(6);
         return Inertia::render('Sections/Adverts',[
             'adverts' => $adverts
         ]);
@@ -329,5 +329,73 @@ class DashboardController extends Controller
         $subcategory->delete();
 
         return redirect()->back()->with('message', 'Subcategory deleted!');
+    }
+
+    public function plans(Request $request){
+        $categories = Category::latest()->get();
+        if($request->query('q')){
+            $this->search = $request->query('q');
+            return Inertia::render('Sections/Plans', [
+                'plans' => Plan::where('title', 'like', '%'. $this->search .'%')->with('categories')->get(),
+                'categories' => $categories
+            ]);
+        }
+        $plans = Plan::latest()->with('categories')->paginate(6);
+        return Inertia::render('Sections/Plans',[
+            'plans' => $plans,
+            'categories' => $categories
+        ]);
+    }
+
+    public function addPlan(Request $request){
+        $request->validate([
+            'title' => 'required|string|unique:properties',
+            'price' => 'required',
+            'discount' => 'required',
+            'categories' => 'required',
+            'properties' => 'required'
+        ]);
+
+        $plan = Plan::create([
+            'title' => $request->title,
+            'price' => $request->price,
+            'discount' => $request->discount,
+            'properties' => json_encode($request->properties)
+        ]);
+
+        $plan->categories()->attach(array_map(fn($category) => $category['id'],$request->categories));
+
+        return redirect()->back()->with('message', 'Plan created!');
+    }
+
+    public function updatePlan(Request $request, $id){
+        $plan = Plan::find($id);
+
+        if(!$plan) return redirect()->back()->withErrors([
+            'message' => 'Plan not found!.',
+        ]);
+
+        $plan->update([
+            'title' => $request->title,
+            'price' => $request->price,
+            'discount' => $request->discount,
+            'properties' => json_encode($request->properties)
+        ]);
+
+        $plan->categories()->sync(array_map(fn($category) => $category['id'],$request->categories));
+
+        return redirect()->back()->with('message', 'Plan updated!');
+    }
+
+    public function deletePlan($id){
+        $plan = Plan::find($id);
+
+        if(!$plan) return redirect()->back()->withErrors([
+            'message' => 'Plan not found!.',
+        ]);
+
+        $plan->delete();
+
+        return redirect()->back()->with('message', 'Plan deleted!');
     }
 }

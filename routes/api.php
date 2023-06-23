@@ -33,13 +33,14 @@ Route::get('/location', function(){
     ]);
 });
 
+Route::get('/adverts', [AdvertController::class, 'index']);
+Route::get('/categories', [AdvertController::class, 'categories']);
+
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/user', [AuthController::class, 'index']);
 
-    Route::get('/adverts', [AdvertController::class, 'index']);
 
-    Route::get('/categories', [AdvertController::class, 'categories']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });

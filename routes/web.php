@@ -20,9 +20,7 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
+Route::get('/', [AdvertController::class, 'adverts'])->name('home');
 
 Route::get('/migrate', function(){
     Artisan::call('migrate:fresh --force');
@@ -47,7 +45,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/profile/feedback', [AccountController::class, 'feedback']);
     Route::get('/profile/opinions', [AccountController::class, 'opinions']);
     Route::get('/profile/messages', [AccountController::class, 'messages']);
-    Route::get('/profile/premiumservices', [AccountController::class, 'premium']);
+    Route::get('/profile/subscriptions', [AccountController::class, 'premium']);
     Route::post('/logout', [AccountController::class, 'logout']);
 });
 
@@ -72,6 +70,11 @@ Route::prefix('admin')->group(function(){
 
         Route::get('/adverts', [DashboardController::class, 'adverts']);
 
+
+        Route::get('/plans', [DashboardController::class, 'plans']);
+        Route::post('/addplan', [DashboardController::class, 'addPlan']);
+        Route::post('/updateplan/{id}', [DashboardController::class, 'updatePlan']);
+        Route::post('/deleteplan/{id}', [DashboardController::class, 'deletePlan']);
 
         Route::get('/properties', [DashboardController::class, 'properties']);
         Route::post('/addproperty', [DashboardController::class, 'addProperty']);

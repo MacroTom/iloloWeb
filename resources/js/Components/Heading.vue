@@ -38,8 +38,8 @@ export default {
             <Statusbutton
                 icon="bxs-bookmark" title="Saved"/>
             <Statusbutton
-                to="/profile/premiumservices"
-                icon="bxs-diamond" title="Premium services"/>
+                to="/profile/subscriptions"
+                icon="bxs-diamond" title="Subscriptions"/>
             <Statusbutton
                 to="/profile"
                 icon="bxs-bar-chart-alt-2" title="My ads"/>

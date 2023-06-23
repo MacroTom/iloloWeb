@@ -22,4 +22,8 @@ class Subcategory extends Model
     {
         return $this->hasMany(Advert::class);
     }
+
+    public function advertsCount(){
+        return $this->adverts()->where('status', 'active')->count();
+    }
 }

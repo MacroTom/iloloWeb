@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -43,6 +44,10 @@ body{
 /* Handle on hover */
 *::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+.p-tabview-panels{
+    @apply px-0 !important
 }
 
 .p-dialog-content{
@@ -115,4 +120,25 @@ body{
 
 .advert-control > label{
     @apply text-xs text-slate-500
+}
+
+.pulse{
+    @apply bg-[#1895B0] w-4 h-4 lg:w-2 lg:h-2 rounded-full flex justify-center items-center absolute top-1 right-1
+}
+@keyframes pulse {
+    0%{
+        @apply w-0 h-0 lg:w-0 lg:h-0
+    }
+    90%{
+        @apply opacity-80
+    }
+    100%{
+        @apply w-10 h-10 lg:w-12 lg:h-12 opacity-0
+    }
+}
+.pulse::after{
+    content: "";
+    position: absolute;
+    animation: pulse 2.5s linear infinite;
+    @apply w-4 h-4 lg:w-2 lg:h-2 bg-[#e6eff1] rounded-full z-[-1]
 }

@@ -13,6 +13,7 @@ const model = ref([
     {
         label: 'Pages',
         items: [
+            { label: 'Plans', icon: 'pi pi-fw pi-wallet', to: prefix+'plans' },
             { label: 'Users', icon: 'pi pi-fw pi-user', to: prefix+'users' },
             { label: 'Admins', icon: 'pi pi-fw pi-verified', to: prefix+'admins' },
             { label: 'Adverts', icon: 'pi pi-fw pi-chart-bar', to: prefix+'adverts' },

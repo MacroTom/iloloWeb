@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Advert;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Category;
@@ -73,5 +74,28 @@ class AdvertController extends Controller
         },array_reverse($photos)));
 
         return redirect()->back()->with('message', 'Advert has been created!');
+    }
+
+    public function adverts(){
+        $adverts = Advert::where('status','active')->latest()->with('images')->take(16)->get();
+        $categories = Category::latest()->get();
+        return Inertia::render('Home',[
+            'adverts' => $adverts,
+            'categories' => $categories->map(function($category){
+                return [
+                    'id' => $category->id,
+                    'title' => $category->title,
+                    'adverts' => $category->advertsCount(),
+                    'subcategories' => $category->subcategories->map(function($subcategory){
+                        return [
+                            'id' => $subcategory->id,
+                            'title' => $subcategory->title,
+                            'adverts' => $subcategory->advertsCount(),
+                        ];
+                    })
+                ];
+            })->toArray(),
+            'location' => getStates()
+        ]);
     }
 }

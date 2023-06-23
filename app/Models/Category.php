@@ -29,6 +29,11 @@ class Category extends Model
     }
 
     public function advertsCount(){
-        return $this->adverts()->count();
+        return $this->adverts()->where('status', 'active')->count();
+    }
+
+    public function plans(): BelongsToMany
+    {
+        return $this->belongsToMany(Plan::class, 'category_plan');
     }
 }

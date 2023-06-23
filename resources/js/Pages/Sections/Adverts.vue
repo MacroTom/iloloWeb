@@ -31,7 +31,11 @@ export default{
     },
     methods:{
         formatCurrency(value){
-            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            let currency = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'NGN',
+            });
+            return "₦" + currency.format(value).replace("NGN","");
         },
         formatDate(value){
             return value.toLocaleDateString('en-US', {
@@ -72,18 +76,18 @@ export default{
             }
         },
         searchAdvert(){
-            // router.get(`adverts?q=${this.search}`, {},
-            // {
-            //     preserveState: true,
-            //     onSuccess: (res) => {
-            //         // this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Data Retrieved!', life: 3000 });
-            //         // console.log(res);
-            //     },
-            //     onError: (err) => {
-            //         this.$toast.add({ severity: 'error', summary: 'Error!', detail: 'An error has occurred!', life: 3000 });
-            //     }
-            // }
-            // );
+            router.get(`adverts?q=${this.search}`, {},
+            {
+                preserveState: true,
+                onSuccess: (res) => {
+                    // this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Data Retrieved!', life: 3000 });
+                    // console.log(res);
+                },
+                onError: (err) => {
+                    this.$toast.add({ severity: 'error', summary: 'Error!', detail: 'An error has occurred!', life: 3000 });
+                }
+            }
+            );
         },
         clearSearch(){
             !this.search && this.gotoPage(1);
@@ -132,16 +136,29 @@ export default{
                         </div>
                     </template>
                     <template #empty> No adverts found. </template>
-                    <Column field="images" header="image">
+                    <Column header="Actions" style="min-width: 10rem">
+                        <template #body="{data}">
+                            <div class="p-buttonset">
+                                <Button icon="pi pi-pencil" size="small" @click="updateModal(this,data)"/>
+                                <Button icon="pi pi-trash" size="small" severity="danger" @click="deleteCategory(this,data.id)"/>
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="images" header="Image">
                         <template #body="{ data }">
+                            <img alt="avatar" class="object-cover rounded" :src="data.images[0].source" width="80" style="vertical-align: middle" />
                         </template>
                     </Column>
                     <Column field="title" :sortable="true" header="Title" style="min-width: 12rem">
                     </Column>
-                    <Column field="brand" header="Brand"></Column>
+                    <Column field="price" header="Price">
+                        <template #body="{ data }">
+                            {{ formatCurrency(data.price) }}
+                        </template>
+                    </Column>
                     <Column field="state" header="Location" style="min-width: 12rem">
                         <template #body="{ data }">
-                            {{ data.lga }} ,{{ data.state }}
+                            {{ data.lga }}, {{ data.state }}
                         </template>
                     </Column>
                     <Column field="status" header="Status">

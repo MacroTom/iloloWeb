@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->nullable();
             $table->text('description');
+            $table->string('type')->nullable();
             $table->double('price')->default(0);
             $table->boolean('negotiable')->default(false);
             $table->string('state');

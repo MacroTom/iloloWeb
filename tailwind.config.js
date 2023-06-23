@@ -11,9 +11,12 @@ module.exports = {
       extend: {
         fontFamily: {
             sans: ['Nunito', ...defaultTheme.fontFamily.sans],
-            Poppins: ['Poppins', 'sans-serif'],
+            Poppins: ['Poppins', 'sans-serif', 'Inter'],
+            Inter: ['Inter', 'sans-serif']
         },
       },
     },
-    plugins: [],
+    plugins: [
+        require('tailwind-scrollbar-hide')
+    ],
   }

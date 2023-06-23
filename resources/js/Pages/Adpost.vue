@@ -172,7 +172,6 @@ export default{
                 state: '',
                 properties: {}
             }
-            this.currentTimeline = 0;
         },
         checkForRequiredFields(timeline, innerParent=null){
             this.fields = {

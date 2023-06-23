@@ -22,12 +22,12 @@ class AdvertController extends Controller
                 return [
                     'id' => $category->id,
                     'title' => $category->title,
-                    'adverts' => $category->adverts->count(),
+                    'adverts' => $category->advertsCount() > 1 ? $category->advertsCount() ." ads" : $category->advertsCount() ." ad",
                     'subcategories' => $category->subcategories->map(function($subcategory){
                         return [
                             'id' => $subcategory->id,
                             'title' => $subcategory->title,
-                            'adverts' => $subcategory->adverts->count(),
+                            'adverts' => $subcategory->advertsCount() > 1 ? $subcategory->advertsCount() ." ads" : $subcategory->advertsCount()." ad",
                         ];
                     })
                 ];
@@ -42,6 +42,19 @@ class AdvertController extends Controller
                 ->orWhere('description', 'like', '%'. $request->query('q') .'%')->get()
             ]);
         }
+        else if($request->query('lga')){
+            return $this->success('Adverts Retrieved!', [
+                'adverts' => Advert::where('lga', 'like', '%'. $request->query('lga') .'%')->get()
+            ]);
+        }
+        else{
+            if($request->query('state')){
+                return $this->success('Adverts Retrieved!', [
+                    'adverts' => Advert::where('state', 'like', '%'. $request->query('state') .'%')->get()
+                ]);
+            }
+        }
+
         return $this->success('Adverts Retrieved!', [
             'adverts' => Advert::latest()->paginate(16)
         ]);
