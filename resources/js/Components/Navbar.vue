@@ -4,6 +4,20 @@ import DropDownList from './DropDownList.vue';
 import axios from 'axios';
 import { store } from '../store.js';
 export default{
+    props:{
+        bg: {
+            type: String,
+            default: 'bg-white'
+        },
+        border: {
+            type: String,
+            default: 'border-b'
+        },
+        styles:{
+            type: String
+        },
+        scroll: Boolean
+    },
     components:{
         Link,
         DropDownList
@@ -16,7 +30,8 @@ export default{
             showCategory: false,
             selectedSubcategory: null,
             showPopup: false,
-            showMobilePopup: false
+            showMobilePopup: false,
+            background: '',
         }
     },
     methods:{
@@ -37,9 +52,25 @@ export default{
         hideMobilePopup(){
             this.showMobilePopup = false;
         },
+        handleScroll(e){
+            let scrollPos = document.body.scrollTop || document.documentElement.scrollTop;
+
+            if(scrollPos === 0){
+                this.background = this.bg;
+            }
+            else{
+                this.background = "bg-white border-b";
+            }
+        },
     },
     mounted(){
         this.getCategories();
+        if(this.scroll){
+            window.addEventListener("scroll", this.handleScroll, false);
+        }
+        else{
+            this.background = this.bg;
+        }
     }
 }
 </script>
@@ -106,16 +137,16 @@ nav *{
     @apply text-sm text-slate-500
 }
 .menu-buttons{
-    @apply w-10 h-10 rounded-lg bg-slate-50 relative z-[1] flex justify-center items-center cursor-pointer
+    @apply w-10 h-10 rounded-lg relative z-[1] flex justify-center items-center cursor-pointer
 }
 .menu-buttons i{
-    @apply text-xl text-slate-600
+    @apply text-xl text-slate-700
 }
 </style>
 
 <template>
     <!-- For larger screens -->
-    <nav class="hidden lg:flex w-full h-[60px] px-8 items-center fixed z-[500] bg-white border-b top-0 left-0">
+    <nav :class="background +' '+ border +' '+ styles" class="hidden lg:flex w-full h-[60px] lg:px-8 xl:px-28 items-center fixed z-[500] top-0 left-0">
         <div class="mr-10">
             <Link href="/">
                 <img width="80" src="/images/logo-green.png" alt="logo">
@@ -131,17 +162,17 @@ nav *{
             <li><Link href="/profile/subscriptions">Pricing</Link></li>
             <li><Link href="#">Contact</Link></li>
         </ul>
+        <div class="mr-6">
+            <div class="flex items-center px-2 py-1 rounded-lg bg-slate-400/10">
+                <input class="flex-1 text-sm bg-transparent outline-none text-slate-600 placeholder:text-slate-600" type="text" placeholder="Search"/>
+                <div class="cursor-pointer"><i class='text-xl pointer-events-none bx bx-search-alt text-slate-600'></i></div>
+            </div>
+        </div>
         <div v-if="!$page.props.auth?.user" class="flex gap-4">
-            <button @click="store.toggleFormTab('signin')" class="button">Log in</button>
+            <button @click="store.toggleFormTab('signin')" class="button bg-slate-50">Log in</button>
             <button @click="store.toggleFormTab('register')" class="button primary">Sign up</button>
         </div>
         <div v-else class="flex items-center gap-6">
-            <div>
-                <div class="flex items-center px-2 py-1 rounded-lg bg-slate-50">
-                    <input class="flex-1 text-sm bg-transparent outline-none text-slate-600" type="text" placeholder="Search"/>
-                    <div class="cursor-pointer"><i class='text-xl pointer-events-none bx bx-search-alt text-slate-600'></i></div>
-                </div>
-            </div>
             <div class="flex items-center gap-6">
                 <div class="menu-buttons">
                     <i class='bx bx-bell'></i>
@@ -154,7 +185,7 @@ nav *{
             </div>
             <div class="w-10 h-10 flex justify-center items-center rounded-lg active:bg-[#e6eff1] relative" v-click-away="hidePopup">
                 <img @click="showPopup = !showPopup" class="object-cover rounded-lg border-[2px] shadow cursor-pointer" :src="$page.props.auth?.user?.avatar" alt="avatar"/>
-                <div :class="showPopup ? '' : 'hidden'" class="popup">
+                <div :class="showPopup ? '' : 'hidden'" class="popup" @click="hidePopup">
                     <header class="flex items-center w-full gap-2 px-3 py-2">
                         <div class="flex items-center justify-center rounded-lg w-9 h-9">
                             <img class="object-cover rounded-lg border-[2px] shadow" width="36" :src="$page.props.auth?.user?.avatar" alt="avatar"/>
@@ -166,7 +197,7 @@ nav *{
                     </header>
                     <ul class="w-full py-2 border-y">
                         <li>
-                            <Link href="#">View Profile</Link>
+                            <Link href="/profile">View Profile</Link>
                             <i class='bx bx-chevron-right'></i>
                         </li>
                         <li>
@@ -179,16 +210,16 @@ nav *{
                         </li>
                     </ul>
                     <div class="w-full p-3 rounded-b-lg hover:bg-slate-50">
-                        <Link method="post" href="/logout">Log out</Link>
+                        <Link method="post" as="button" href="/logout">Log out</Link>
                     </div>
                 </div>
             </div>
-            <button class="button primary">Post ad</button>
+            <Link href="/postad" class="button primary">Post ad</Link>
         </div>
     </nav>
 
     <!-- For small screens -->
-    <nav class="w-full lg:hidden h-[60px] px-4 flex items-center fixed z-[500] bg-white border-b top-0 left-0">
+    <nav :class="background +' '+ border +' '+ styles" class="w-full lg:hidden h-[60px] px-4 flex items-center fixed z-[500] top-0 left-0">
         <div class="relative flex items-center justify-between flex-1">
             <div @click="menuOpen = !menuOpen"><i :class="menuOpen ? 'bx-x' : 'bx-menu'" class='text-2xl bx text-slate-700'></i></div>
             <Link href="/">
@@ -209,7 +240,7 @@ nav *{
                         </header>
                         <ul class="w-full py-2 border-y">
                             <li>
-                                <Link href="#">View Profile</Link>
+                                <Link href="/profile">View Profile</Link>
                                 <i class='bx bx-chevron-right'></i>
                             </li>
                             <li>
@@ -222,11 +253,13 @@ nav *{
                             </li>
                         </ul>
                         <div class="w-full p-3 rounded-b-lg hover:bg-slate-50">
-                            <Link href="#">Log out</Link>
+                            <Link method="post" as="button" href="/logout">Log out</Link>
                         </div>
                     </div>
                 </div>
-                <i v-else class='text-2xl bx bx-user text-slate-600'></i>
+                <div v-else @click="store.toggleFormTab('signin')">
+                    <i class='text-2xl bx bx-user text-slate-600 pointer-events-none'></i>
+                </div>
             </div>
         </div>
         <ul :class="menuOpen ? 'left-0' : '-left-full'" class="nav-links w-full min-h-[calc(100vh-60px)] max-h-[calc(100vh-60px)] px-4 pt-4 bg-white absolute top-[60px] transition-[left] duration-200 ease-in">

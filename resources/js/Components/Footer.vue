@@ -12,7 +12,7 @@ export default {
 
 <template>
     <footer class="min-h-[300px] bg-[#1895B0]/80 bg-no-repeat bg-[url('/images/dots.svg')] flex flex-col gap-3 justify-between">
-        <section class="grid grid-cols-2 gap-x-2 gap-y-4 lg:gap-4 lg:grid-cols-4 px-4 py-8 lg:py-8 lg:px-[64px]">
+        <section class="grid grid-cols-2 gap-x-2 gap-y-4 lg:gap-4 lg:grid-cols-4 px-4 py-8 lg:p-8 xl:px-28">
             <div>
                 <p class="mb-2 text-sm font-semibold text-slate-300">About us</p>
                 <div class="flex flex-col items-start gap-2 text-sm text-slate-50">
@@ -67,7 +67,7 @@ export default {
                 </div>
             </div>
         </section>
-        <div class="h-[60px] bg-[#1895B0]/90 flex items-center justify-center text-sm text-slate-100 lg:justify-between px-4 lg:px-[64px]">
+        <div class="h-[60px] bg-[#1895B0]/90 flex items-center justify-center text-sm text-slate-100 lg:justify-between px-4 lg:px-8 xl:px-28">
             <p><i class='bx bx-copyright'></i> 2023 ilolo marketplace. All Rights Reserved</p>
             <p class="items-center hidden lg:flex"><i class='mr-2 text-xl bx bx-code-alt'></i> Powered by <a class="ml-2" href="mailto:info@enastech.com">ETS</a>.</p>
         </div>

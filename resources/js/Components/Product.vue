@@ -29,10 +29,10 @@ export default {
 </script>
 
 <template>
-    <div class="w-1/2 md:w-1/3 lg:w-1/4 rounded-lg px-[4px] mb-4 shadow-lg shadow-[#e0e0e0]/80 flex-shrink-0">
-        <Link href="#">
-            <div class="relative w-full">
-                <img class="w-full h-[120px] md:h-[150px] object-cover rounded-t-lg" :src="advert?.images[0].source" alt="product">
+    <div class="w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/6 rounded-lg px-[4px] mb-4 shadow-lg shadow-[#e0e0e0]/80 flex-shrink-0">
+        <Link :href="`/advert/${advert.id}`">
+            <div class="relative w-full h-[120px] md:h-[150px]">
+                <img class="w-full h-full object-cover rounded-t-lg" :src="advert?.images[0].source" alt="product">
                 <div v-if="hasLabel" class="w-1/3 uppercase font-light text-white text-center text-xs lg:w-[80px] p-1 bg-[#B92727]/60 absolute left-0 top-0 rounded-tl-lg">
                     SPECIAL
                 </div>

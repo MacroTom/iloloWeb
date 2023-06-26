@@ -1,98 +1,66 @@
 <script>
 import { Head, Link } from '@inertiajs/vue3';
-import Heading from '../Components/Heading.vue';
 import Bottomnavigationbar from '../Components/Bottomnavigationbar.vue';
 import { store } from '../store.js';
-import Tabmanager from '../Components/Tabmanager.vue';
+import Navbar from '../Components/Navbar.vue';
+import Preloader from '../Components/Preloader.vue';
 export default{
     props:{
         auth: Object
     },
     components:{
-    Head,
-    Link,
-    Heading,
-    Bottomnavigationbar,
-    Tabmanager,
-},
+        Head,
+        Link,
+        Bottomnavigationbar,
+        Navbar,
+        Preloader
+    },
     data(){
         return{
             store,
         }
     },
     mounted(){
-        const body = document.body;
-        var classval;
-        for (let index = 0; index < body.classList.length; index++) {
-            classval = body.classList[index];
-            if(classval.includes('bg-')){
-                body.classList.remove(classval);
-            }
-        }
-        body.classList.add('bg-[#C7D1D3]');
-    },
-    methods:{
     }
 }
 </script>
 
 <template>
-    <Heading/>
-    <section class="relative top-[40px] lg:top-[60px] flex items-start justify-center gap-x-6 lg:gap-x-9 px-2 pt-6 pb-16 lg:p-8">
-        <aside @click="store.device.screen === 'mobile' && store.toggleDrawer()"
-            :class="!store.isDrawerOpen ? '-left-full' : 'left-0'"
-            class="w-full lg:w-4/12 xl:w-3/12 h-full lg:h-full fixed top-0 z-10 lg:z-0 lg:static bg-black/10 lg:bg-transparent transition-[left] ease-out duration-300"
-            >
-            <div class="w-10/12 lg:w-full bg-[#1895B0]/90 lg:bg-white h-full lg:rounded-lg lg:shadow lg:shadow-black/50">
-                <div class="w-full bg-slate-50 pb-6 lg:bg-transparent lg:border-b-2 lg:border-[#D9D9D9]">
-                    <div class="text-right p-4">
-                        <Link
-                            href="#">
-                            <i class='bx bx-cog text-2xl text-[#4E4B4A]'></i>
-                        </Link>
-                    </div>
-                    <div>
-                        <div class="flex justify-center mb-2">
-                            <img v-if="auth?.user.avatar" class="rounded-full w-[70px] h-[70px] lg:w-[90px] lg:h-[90px]"
-                                :src="auth?.user.avatar"
-                                alt="avatar"/>
-                            <div v-else class="w-[70px] h-[70px] lg:w-[90px] lg:h-[90px] flex items-center justify-center rounded-full bg-[#D9D9D9]">
-                                <i class='bx bx-user text-5xl text-[#4E4B4A]'></i>
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <span class="font-semibold text-lg">John Doe</span>
-                            <span class="text-xs font-medium text-black/50">johndoe@gmail.com</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full h-full overflow-y-auto pb-6">
-                    <div v-for="(option, key) in store.profileoptions" :key="key"
-                        class="p-4 flex items-center select-none text-white/70 lg:text-black/70 border-b last:border-b-0"
-                        >
-                        <div class="w-2/12 flex justify-center items-center lg:text-black/50">
-                            <i :class="option.icon"
-                                class='bx text-xl pointer-events-none'></i>
-                        </div>
-                        <Link :class="$page.url === option.href && 'text-slate-100 lg:text-[#1895B0]'"
-                            :href="option.href"
-                            :as="option.method && option.method.toLowerCase() === 'get' ? 'a' : 'button'"
-                            :method="option.method ? option.method : 'get'"
-                            class="w-8/12 font-semibold pl-4 text-left"
-                            >
-                            {{ option.title }}
-                        </Link>
-                        <div class="w-2/12 text-sm text-center lg:text-[#1895B0] font-medium">
-                            {{ option.counter !== null ? `+${option.counter}` : '' }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <Navbar/>
+    <section class="w-full min-h-[calc(100vh-60px)] overflow-auto scrollbar-hide lg:scrollbar-default pt-[60px] left-0 flex flex-col lg:flex-row px-4 pb-4 lg:pb-8 lg:px-8 xl:px-28 bg-white">
+        <aside class="w-3/12 py-8 border-r hidden lg:block">
+            <Link href="#" :class="$page.url === '/profile' ? 'bg-slate-50' : ''" class="w-[250px] flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg mb-1">
+                <i class='bx bx-user text-xl text-slate-600'></i>
+                <span class="text-sm">Profile</span>
+            </Link>
+            <Link href="#" :class="$page.url === '/profile/adverts' ? 'bg-slate-50' : ''" class="w-[250px] flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg mb-1">
+                <i class='bx bx-bar-chart-alt-2 text-xl text-slate-600'></i>
+                <span class="text-sm">My adverts</span>
+            </Link>
+            <Link href="#" :class="$page.url === '/profile/bookmarks' ? 'bg-slate-50' : ''" class="w-[250px] flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg mb-1">
+            <i class='bx bx-bookmark text-xl text-slate-600'></i>
+                <span class="text-sm">Bookmarks</span>
+            </Link>
+            <Link href="/logout" method="post" as="button" class="w-[250px] flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg mb-1">
+                <i class='bx bx-log-out text-xl text-slate-600'></i>
+                <span class="text-sm">Logout</span>
+            </Link>
         </aside>
 
-        <main class="w-full lg:w-8/12 xl:w-7/12 rounded-lg bg-white shadow shadow-black/50 overflow-y-auto">
-            <slot/>
-        </main>
+        <aside class="lg:hidden mt-2">
+            <div class="flex pb-2">
+                <Link href="#" :class="$page.url === '/profile' ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-sm font-Inter font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
+                    <span>Personal</span>
+                </Link>
+                <Link href="#" :class="$page.url === '/profile/adverts' ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-sm font-Inter text-slate-600 font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
+                    <span>My adverts</span>
+                </Link>
+                <Link href="#" :class="$page.url === '/profile/bookmarks' ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-sm font-Inter text-slate-600 font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
+                    <span>Bookmarks</span>
+                </Link>
+            </div>
+        </aside>
+        <slot/>
     </section>
     <Bottomnavigationbar/>
 </template>

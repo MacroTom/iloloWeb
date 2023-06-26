@@ -128,7 +128,7 @@ export default{
         :index="index"
     />
     <section :class="store.showFormTab ? 'flex' : 'hidden'"
-        class="fixed top-0 left-0 z-50 flex-col items-center justify-center w-screen h-screen select-none bg-black/50">
+        class="fixed top-0 left-0 z-[800] flex-col items-center justify-center w-screen h-screen select-none bg-black/50">
 
         <!-- Options -->
         <div v-show="store.formscreen === 'options'"

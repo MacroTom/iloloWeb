@@ -87,6 +87,7 @@ export default{
     <VuePreloader
         background-color="#fff"
         @loading-is-over="showPreloader = false"
+        :transition-speed="1000"
         >
         <template v-slot="{ percent, color }">
             <transition name="loading-animation" mode="in-out">

@@ -34,6 +34,8 @@ Route::middleware('guest')->group(function(){
     Route::post('/resetpassword', [ResetPassword::class, 'handle']);
 });
 
+Route::get('/advert/{id}', [AdvertController::class, 'advert']);
+
 Route::middleware('auth')->group(function(){
     Route::get('/postad', [AdvertController::class, 'index']);
     Route::post('/postad', [AdvertController::class, 'store']);

@@ -17,12 +17,14 @@ return new class extends Migration
             $table->string('lastname');
             $table->string('email')->unique();
             $table->string('phone');
-            $table->string('state')->nullable();
-            $table->string('lga')->nullable();
             $table->string('password');
             $table->unsignedBigInteger('google_id')->nullable();
             $table->unsignedBigInteger('facebook_id')->nullable();
-            $table->text('avatar')->nullable();
+            $table->text('avatar')->default('https://lineone.piniastudio.com/images/avatar/avatar-19.jpg');
+            $table->text('facebook_link')->nullable();
+            $table->text('twitter_link')->nullable();
+            $table->text('instagram_link')->nullable();
+            $table->text('website_link')->nullable();
             $table->enum('status', ['active','disabled'])->default('active');
             $table->enum('presence', ['online', 'offline'])->default('offline');
             $table->tinyInteger('role')->default(0);

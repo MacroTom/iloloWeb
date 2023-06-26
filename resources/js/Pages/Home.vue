@@ -12,9 +12,12 @@ import FormTab from '../Components/Form.vue';
 import Navbar from '../Components/Navbar.vue';
 import Preloader from '../Components/Preloader.vue';
 import Advert from '../Components/Advert.vue';
+import HeroSection from '../Components/HeroSection.vue';
+import Sliders from '../Components/Sliders.vue';
 export default {
     props:{
         adverts: Array,
+        special: Array,
         categories: Array,
         location: Object
     },
@@ -31,7 +34,9 @@ export default {
         FormTab,
         Navbar,
         Preloader,
-        Advert
+        Advert,
+        HeroSection,
+        Sliders
     },
     data(){
         return {
@@ -50,9 +55,10 @@ export default {
     </Head>
     <!-- <Heading/> -->
     <Preloader/>
-    <Navbar/>
-    <section class="w-full relative left-0 top-[40px] lg:top-[60px]">
-        <div class="hidden lg:flex bg-[#1895B0] lg:bg-[#A2BDC3] w-full h-[60px] lg:h-[230px] border-transparent justify-center items-center">
+    <Navbar bg="bg-transparent" scroll border="border-0"/>
+    <section class="w-full relative left-0 top-0">
+        <HeroSection/>
+        <!-- <div class="hidden lg:flex bg-[#1895B0] lg:bg-[#A2BDC3] w-full h-[60px] lg:h-[230px] border-transparent justify-center items-center">
             <img width="300" class="hidden lg:block" src="/images/person1.png" alt="person">
             <div class="flex items-center justify-between w-full h-full gap-2 px-2 lg:w-fit lg:flex-col lg:justify-center">
                 <div class="flex items-center justify-center w-4/12 lg:w-full">
@@ -74,28 +80,38 @@ export default {
                 <img width="150" class="hidden lg:block" src="/images/person2.png" alt="person">
                 <img width="100" class="hidden lg:block" src="/images/person3.png" alt="person">
             </div>
-        </div>
-        <main class="flex w-full h-full gap-3 xl:px-36 bg-slate-50">
+        </div> -->
+        <main class="flex w-full h-full gap-3 lg:px-8 xl:px-28 bg-slate-50">
             <FormTab/>
-            <Categorysidebar>
+            <!-- <Categorysidebar>
                 <Category v-for="(category,index) in categories"
                 :key="index"
                 :category="category"
                 />
-            </Categorysidebar>
-            <section class="w-full p-3">
-                <div class="hidden gap-3 lg:flex">
-                    <div class="w-1/3 py-10 rounded-lg flex flex-col items-center justify-center gap-4 font-medium text-white bg-[#4074FB]/60 hover:bg-[#4074FB]/70 cursor-pointer shadow-lg">
+            </Categorysidebar> -->
+            <section class="p-3 lg:py-3 lg:px-0 relative bg-slate-50">
+                <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4">
+                    <!-- <div class="w-1/3 py-10 rounded-lg flex flex-col items-center justify-center gap-4 font-medium text-white bg-[#4074FB]/60 hover:bg-[#4074FB]/70 cursor-pointer shadow-lg">
                         <span>Want to sell</span>
                         <i class='text-5xl pointer-events-none select-none bx bx-plus'></i>
                         <span>Post advert for free</span>
                     </div>
-                    <Banner class="w-2/3"/>
+                    <Banner class="w-2/3"/> -->
+                    <Sliders/>
+                    <section class="lg:col-start-3 lg:col-end-4 shadow-md rounded-lg">
+                        <img class="object-cover w-full h-full rounded-lg" src="/images/banner_4.png" alt="banner_4"/>
+                    </section>
+                    <section class="lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 shadow-md rounded-lg">
+                        <img class="object-cover w-full h-full rounded-lg" src="/images/banner_2.png" alt="banner_2"/>
+                    </section>
                 </div>
                 <div class="py-3 mb-3 text-xl font-semibold lg:mt-4">
                     Special offers
                 </div>
                 <div class="flex w-full gap-2 p-2 overflow-x-auto scrollbar-hide">
+                    <Product v-for="(advert,index) in special"
+                    :advert="advert"
+                    :key="index"/>
                     <!-- <Product :advert="{}"/>
                     <Product :advert="{}"/>
                     <Product :advert="{}"/>

@@ -142,3 +142,38 @@ body{
     animation: pulse 2.5s linear infinite;
     @apply w-4 h-4 lg:w-2 lg:h-2 bg-[#e6eff1] rounded-full z-[-1]
 }
+
+.is-typed {
+    font-family: 'Monaco';
+  }
+  .is-typed span.typed {
+    color: #1895B0;
+  }
+  .is-typed span.cursor {
+    display: inline-block;
+    width: 3px;
+    background-color: #1895B0;
+    animation: blink 1s infinite;
+  }
+  .is-typed span.underscore {
+    display: inline-flex;
+    width: 10px;
+    height: 1px;
+    align-items: flex-end;
+    background-color: #1895B0;
+    animation: blink 1s infinite;
+  }
+  .is-typed span.cursor.typing {
+    animation: none;
+  }
+  @keyframes blink {
+    49% {
+      background-color: #1895B0;
+    }
+    50% {
+      background-color: transparent;
+    }
+    99% {
+      background-color: transparent;
+    }
+  }

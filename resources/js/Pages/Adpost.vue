@@ -7,6 +7,8 @@ import Timeliner from '../Components/Timeliner.vue';
 import OptionPicker from '../Components/OptionPicker.vue';
 import FlatButton from '../Components/FlatButton.vue';
 import SnackBar from '../Components/SnackBar.vue';
+import Navbar from '../Components/Navbar.vue';
+import Preloader from '../Components/Preloader.vue';
 export default{
     props: {
         properties: Object,
@@ -21,7 +23,9 @@ export default{
         OptionPicker,
         FlatButton,
         draggable,
-        SnackBar
+        SnackBar,
+        Navbar,
+        Preloader
     },
     data(){
         return{
@@ -249,6 +253,7 @@ export default{
             router.post('postad/', this.form,
             {
                 onSuccess: (res) => {
+                    console.log(res);
                     this.clearForm();
                     this.loading.continue = false;
                     this.currentTimeline += 2;
@@ -256,7 +261,7 @@ export default{
                 onError: (err) => {
                     this.store.snackbar.add({
                         message: err.message,
-                        severity: "error"
+                        severity: "warning"
                     });
                     this.loading.continue = false;
                 },
@@ -306,10 +311,9 @@ export default{
     <Head>
         <title>Post ad</title>
     </Head>
+    <Preloader/>
     <SnackBar/>
-    <div class="hidden lg:block">
-        <Heading/>
-    </div>
+    <Navbar/>
     <section class="w-full max-h-[calc(100vh-60px)] overflow-y-auto relative top-[60px] min-h-[calc(100vh-60px)]">
         <nav class="lg:hidden w-full h-[60px] flex items-center justify-between px-2 bg-white fixed left-0 top-0 shadow z-50">
             <button @click="back">

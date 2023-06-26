@@ -55,7 +55,14 @@ class AdvertController extends Controller
 
         $user = User::find($request->user()->id);
 
-        $advert = $user->adverts()->create([
+        if($user->role === 'admin') {
+            $adType = ['type' => 'special'];
+        }
+        else{
+            $adType = [];
+        }
+
+        $advert = $user->adverts()->create(array_merge([
             'title' => $request->title,
             'category_id' => $request->category,
             'subcategory_id' => $request->subcategory,
@@ -65,7 +72,7 @@ class AdvertController extends Controller
             'negotiable' => $request->negotiable,
             'description' => $request->description,
             'properties' => json_encode($request->properties)
-        ]);
+        ],$adType));
 
         $advert->images()->createMany(array_map(function($photo){
             return [
@@ -76,11 +83,20 @@ class AdvertController extends Controller
         return redirect()->back()->with('message', 'Advert has been created!');
     }
 
+    public function advert($id){
+        $advert = Advert::where('id', $id)->with('images','user')->first();
+        return Inertia::render('Product', [
+            'advert' => $advert
+        ]);
+    }
+
     public function adverts(){
-        $adverts = Advert::where('status','active')->latest()->with('images')->take(16)->get();
+        $adverts = Advert::where('type', '!=', 'special')->where('status','active')->latest()->with('images')->take(16)->get();
+        $special = Advert::where('type', 'special')->latest()->with('images')->take(16)->get();
         $categories = Category::latest()->get();
         return Inertia::render('Home',[
             'adverts' => $adverts,
+            'special' => $special,
             'categories' => $categories->map(function($category){
                 return [
                     'id' => $category->id,

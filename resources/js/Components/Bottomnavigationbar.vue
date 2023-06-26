@@ -21,6 +21,7 @@ export default{
             //     navigation?.classList.remove('bottom-0');
             //     navigation?.classList.add('-bottom-[60px]');
             // }
+            // console.log("scrolling");
 
             if(scrollPos > this.position){
                 if(store.device.screen === 'mobile'){
