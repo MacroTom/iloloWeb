@@ -30,25 +30,28 @@ export default{
                 verified: { value: null, matchMode: FilterMatchMode.EQUALS }
             },
             filters1: null,
-            selectedUser: null,
+            selectedPlan: null,
             current_page: null,
             search: '',
             addVisible: false,
             updateVisible: false,
             form: {
                 id: null,
+                tag: '',
+                icon: '',
                 title: '',
                 price: 0,
                 discount: 0,
                 properties: {
-                    adnumber: 0,
-                    adindication: '',
-                    adautorenew: 'No',
-                    newmessage: 'No',
-                    websociallink: 'No'
+                    count: 1,
+                    autorenew: null,
+                    sms: false,
+                    badge: null,
+                    links: null
                 },
-                categories: []
+                category_type: ''
             },
+            icon: null,
             selectedProperty: null,
             category: null,
             properties: [
@@ -60,15 +63,33 @@ export default{
                 { title: 'Website link' },
                 { title: 'Email Promotion' }
             ],
+            icons: [
+                {title: 'Free', class: 'bx-shopping-bag', count: 1, autorenew: null, sms: false, badge: null, links: false},
+                {title: 'Regular', class: 'bx-trending-up', count: 5, autorenew: 24, sms: false, badge: null, links: false},
+                {title: 'Premium', class: 'bx-badge-check', count: 20, autorenew: 12, sms: true, badge: 'VIP', links: false},
+                {title: 'Diamond', class: 'bx-diamond', count: 50, autorenew: 3, sms: true, badge: 'VIP+', links: true}
+            ],
+            category_types: [
+                {title: 'Land & Properties', value: 'L'},
+                {title: 'Cars', value: 'C'},
+                {title: 'Others', value: 'O'}
+            ],
+            bools: [
+                {title: 'No', value: false},
+                {title: 'Yes', value: true},
+            ],
             activeTab: 0,
         }
     },
     watch: {
-        // whenever category changes, this function will run
-        category(newCategory, oldCategory) {
-            if(newCategory !== null){
-                !this.form.categories.includes(newCategory) && this.form.categories.push(newCategory);
-            }
+        icon(){
+            this.form.icon = this.icon?.class;
+            this.form.title = this.icon?.title;
+            this.form.properties.count = this.icon?.count;
+            this.form.properties.autorenew = this.icon?.autorenew;
+            this.form.properties.sms = this.icon?.sms;
+            this.form.properties.badge = this.icon?.badge;
+            this.form.properties.links = this.icon?.links;
         }
     },
     methods:{
@@ -138,26 +159,30 @@ export default{
             this.addVisible = true;
             this.form = {
                 id: null,
+                tag: '',
+                icon: '',
                 title: '',
                 price: 0,
                 discount: 0,
                 properties: {
-                    adnumber: 0,
-                    adindication: '',
-                    adautorenew: 'No',
-                    newmessage: 'No',
-                    websociallink: 'No'
+                    count: 1,
+                    autorenew: null,
+                    sms: false,
+                    badge: null,
+                    links: null
                 },
-                categories: []
+                category_type: ''
             }
+            this.activeTab = 0
+            this.icon = null;
         },
         addPlan(button){
             button.disabled = true;
             if(
                 this.form.title &&
-                this.form.price > 0 &&
-                this.form.properties.adnumber > 0 &&
-                this.form.categories.length > 0
+                this.form.icon &&
+                this.form.properties.count > 0 &&
+                this.form.category_type
             ){
                 if(!this.form.discount){
                     this.form.discount = 0;
@@ -169,20 +194,26 @@ export default{
                         this.addVisible = false;
                         button.disabled = false;
                         this.form = {
+                            id: null,
+                            tag: '',
+                            icon: '',
                             title: '',
                             price: 0,
                             discount: 0,
                             properties: {
-                                adnumber: 0,
-                                adindication: '',
-                                adautorenew: 'No',
-                                newmessage: 'No',
-                                websociallink: 'No'
+                                count: 1,
+                                autorenew: null,
+                                sms: false,
+                                badge: null,
+                                links: null
                             },
-                            categories: []
+                            category_type: ''
                         }
+                        this.activeTab = 0
+                        this.icon = null;
                     },
                     onError: (err) => {
+                        console.log(err);
                         button.disabled = false;
                         this.$toast.add({ severity: 'error', summary: 'Error!', detail: err.message, life: 3000 });
                     },
@@ -198,11 +229,13 @@ export default{
             button.disabled = true;
             this.form = {
                 id: data.id,
+                tag: data.tag,
+                icon: data.icon,
                 title: data.title,
                 price: data.price,
                 discount: data.discount,
-                properties: JSON.parse(data.properties),
-                categories: data.categories
+                properties: data.properties,
+                category_type: data.category_type
             }
             this.updateVisible = true;
         },
@@ -212,19 +245,24 @@ export default{
                 onSuccess: (res) => {
                     this.$toast.add({ severity: 'success', summary: 'Successful', detail: res.props.flash.message, life: 3000 });
                     this.form = {
+                        id: null,
+                        tag: '',
+                        icon: '',
                         title: '',
                         price: 0,
                         discount: 0,
                         properties: {
-                            adnumber: 0,
-                            adindication: '',
-                            adautorenew: 'No',
-                            newmessage: 'No',
-                            websociallink: 'No'
+                            count: 1,
+                            autorenew: null,
+                            sms: false,
+                            badge: null,
+                            links: null
                         },
-                        categories: []
+                        category_type: ''
                     }
                     this.updateVisible = false;
+                    this.activeTab = 0;
+                    this.icon = null;
                 },
                 onError: (err) => {
                     this.$toast.add({ severity: 'error', summary: 'Error!', detail: err.message, life: 3000 });
@@ -276,7 +314,7 @@ export default{
             <div class="p-4 card lg:p-5">
                 <h5>Plans</h5>
                 <DataTable
-                    v-model:selection="selectedUser"
+                    v-model:selection="selectedPlan"
                     :value="plans?.data ? plans?.data : plans"
                     class="p-datatable-gridlines"
                     dataKey="id"
@@ -309,6 +347,16 @@ export default{
                                 <Button icon="pi pi-pencil" size="small" @click="updateModal(this,data)"/>
                                 <Button icon="pi pi-trash" size="small" severity="danger" @click="deletePlan(this,data.id)"/>
                             </div>
+                        </template>
+                    </Column>
+                    <Column field="icon" header="Icon">
+                        <template #body="{ data }">
+                            <i :class="data.icon" class="bx text-slate-600 text-xl mr-2"></i>
+                        </template>
+                    </Column>
+                    <Column header="Type">
+                        <template #body="{ data }">
+                            {{ data.category_type }}
                         </template>
                     </Column>
                     <Column field="title" :sortable="true" header="Name" style="min-width: 12rem">
@@ -350,6 +398,29 @@ export default{
                     <TabView v-model:activeIndex="activeTab">
                         <TabPanel header="Basic info">
                             <div class="flex gap-2 mb-2 flex-column">
+                                <label>Icon*</label>
+                                <Dropdown v-model="icon" :options="icons" optionLabel="title" placeholder="Select an Icon" class="w-full">
+                                    <template #value="slotProps">
+                                        <div v-if="slotProps.value" class="flex align-items-center">
+                                            <i :class="slotProps.value.class" class="bx text-slate-600 text-xl mr-2"></i>
+                                        </div>
+                                        <span v-else>
+                                            {{ slotProps.placeholder }}
+                                        </span>
+                                    </template>
+                                    <template #option="slotProps">
+                                        <div class="flex align-items-center">
+                                            <i :class="slotProps.option.class" class="bx text-slate-600 text-xl mr-2"></i>
+                                            <div>{{ slotProps.option.title }}</div>
+                                        </div>
+                                    </template>
+                                </Dropdown>
+                            </div>
+                            <div class="flex flex-column gap-2 mb-2">
+                                <label for="title">Tag</label>
+                                <Dropdown v-model="form.tag" :options="['','Most Popular','Recommended','Best value']" placeholder="" class="w-full" />
+                            </div>
+                            <div class="flex gap-2 mb-2 flex-column">
                                 <label>Title*</label>
                                 <InputText id="title" v-model="form.title" />
                                 <!-- <small id="values-help">This is the name of the property! <strong>e.g Laptop Brand</strong></small> -->
@@ -357,44 +428,40 @@ export default{
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Price*</label>
                                 <InputNumber v-model="form.price" :min="0" prefix="₦ " inputId="integeronly"/>
-                                <!-- <small id="values-help">This is the text that will show above the option component! <strong>e.g Brand</strong>.</small> -->
+                                <small id="values-help"><strong>Leave price as ₦0</strong>, if it's free</small>
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Discount*</label>
                                 <InputNumber v-model="form.discount" :min="0" suffix="%" :useGrouping="false" inputId="integeronly" />
                                 <small id="values-help">Discount should be in <strong>Percentage</strong>! If no Discount, leave as 0%.</small>
                             </div>
-                            <div class="flex gap-2 mb-2 flex-column">
-                                <label for="title">Categories*</label>
-                                <Chips class="disabled" v-model="form.categories" separator=",">
-                                    <template #chip="data">
-                                        {{ data.value.title }}
-                                    </template>
-                                </Chips>
-                                <Dropdown v-model="category" :options="categories" placeholder="Select categories" optionLabel="title" class="w-full text-lg" />
-                                <small id="values-help">You can add as many categories as you want!</small>
-                            </div>
                         </TabPanel>
                         <TabPanel header="Additional details">
                             <div class="flex gap-2 mb-2 flex-column">
+                                <div class="flex flex-column gap-2 mb-2">
+                                    <label for="title">Category Type*</label>
+                                    <Dropdown v-model="form.category_type" :options="category_types" optionLabel="title" optionValue="value" placeholder="" class="w-full" />
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mb-2 flex-column">
                                 <label>No of Ads*</label>
-                                <InputNumber v-model="form.properties.adnumber" :min="0" :suffix="form.properties?.adnumber > 1 ? ' ads' : ' ad'" :useGrouping="false" inputId="integeronly" />
+                                <InputNumber v-model="form.properties.count" :min="0" :suffix="form.properties?.count > 1 ? ' ads' : ' ad'" :useGrouping="false" inputId="integeronly" />
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Ad Indication*</label>
-                                <InputText placeholder="<Blank>" v-model="form.properties.adindication"/>
+                                <InputText placeholder="<Blank>" v-model="form.properties.badge"/>
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Ad Auto renew*</label>
-                                <SelectButton class="w-full" v-model="form.properties.adautorenew" :options="['No','Yes']" aria-labelledby="basic" />
+                                <InputNumber v-model="form.properties.autorenew" :min="0" :suffix="form.properties?.autorenew > 1 ? ' hours' : ' hour'" :useGrouping="false" inputId="integeronly" />
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>New message notifications*</label>
-                                <SelectButton class="w-full" v-model="form.properties.newmessage" :options="['No','Yes']" aria-labelledby="basic" />
+                                <SelectButton class="w-full" v-model="form.properties.sms" :options="bools" optionLabel="title" optionValue="value" aria-labelledby="basic" />
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Website & Social media link inclusion*</label>
-                                <SelectButton class="w-full" v-model="form.properties.websociallink" :options="['No','Yes']" aria-labelledby="basic" />
+                                <SelectButton class="w-full" v-model="form.properties.links" :options="bools" optionLabel="title" optionValue="value" aria-labelledby="basic" />
                             </div>
                         </TabPanel>
                     </TabView>
@@ -404,9 +471,32 @@ export default{
                         <Button v-else label="Add" icon="pi pi-check" @click="addPlan(this)" autofocus />
                     </template>
                 </Dialog>
-                <Dialog v-model:visible="updateVisible" modal :header="`Edit plan`" :style="{ width: '30vw' }" :breakpoints="{ '960px': '50vw', '641px': '50vw', '360px': '90vw'  }">
+                <Dialog v-model:visible="updateVisible" modal :header="`New plan`" :style="{ width: '30vw' }" :breakpoints="{ '960px': '50vw', '641px': '50vw', '360px': '90vw'  }">
                     <TabView v-model:activeIndex="activeTab">
                         <TabPanel header="Basic info">
+                            <div class="flex gap-2 mb-2 flex-column">
+                                <label>Icon*</label>
+                                <Dropdown v-model="icon" :options="icons" optionLabel="title" placeholder="Select an Icon" class="w-full">
+                                    <template #value="slotProps">
+                                        <div v-if="slotProps.value" class="flex align-items-center">
+                                            <i :class="slotProps.value.class" class="bx text-slate-600 text-xl mr-2"></i>
+                                        </div>
+                                        <span v-else>
+                                            {{ slotProps.placeholder }}
+                                        </span>
+                                    </template>
+                                    <template #option="slotProps">
+                                        <div class="flex align-items-center">
+                                            <i :class="slotProps.option.class" class="bx text-slate-600 text-xl mr-2"></i>
+                                            <div>{{ slotProps.option.title }}</div>
+                                        </div>
+                                    </template>
+                                </Dropdown>
+                            </div>
+                            <div class="flex flex-column gap-2 mb-2">
+                                <label for="title">Tag</label>
+                                <Dropdown v-model="form.tag" :options="['','Most Popular','Recommended','Best value']" placeholder="" class="w-full" />
+                            </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Title*</label>
                                 <InputText id="title" v-model="form.title" />
@@ -415,51 +505,47 @@ export default{
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Price*</label>
                                 <InputNumber v-model="form.price" :min="0" prefix="₦ " inputId="integeronly"/>
-                                <!-- <small id="values-help">This is the text that will show above the option component! <strong>e.g Brand</strong>.</small> -->
+                                <small id="values-help"><strong>Leave price as ₦0</strong>, if it's free</small>
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Discount*</label>
                                 <InputNumber v-model="form.discount" :min="0" suffix="%" :useGrouping="false" inputId="integeronly" />
                                 <small id="values-help">Discount should be in <strong>Percentage</strong>! If no Discount, leave as 0%.</small>
                             </div>
-                            <div class="flex gap-2 mb-2 flex-column">
-                                <label for="title">Categories*</label>
-                                <Chips class="disabled" v-model="form.categories" separator=",">
-                                    <template #chip="data">
-                                        {{ data.value.title }}
-                                    </template>
-                                </Chips>
-                                <Dropdown v-model="category" :options="categories" placeholder="Select categories" optionLabel="title" class="w-full text-lg" />
-                                <small id="values-help">You can add as many categories as you want!</small>
-                            </div>
                         </TabPanel>
                         <TabPanel header="Additional details">
                             <div class="flex gap-2 mb-2 flex-column">
+                                <div class="flex flex-column gap-2 mb-2">
+                                    <label for="title">Category Type*</label>
+                                    <Dropdown v-model="form.category_type" :options="category_types" optionLabel="title" optionValue="value" placeholder="" class="w-full" />
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mb-2 flex-column">
                                 <label>No of Ads*</label>
-                                <InputNumber v-model="form.properties.adnumber" :min="0" :suffix="form.properties?.adnumber > 1 ? ' ads' : ' ad'" :useGrouping="false" inputId="integeronly" />
+                                <InputNumber v-model="form.properties.count" :min="0" :suffix="form.properties?.count > 1 ? ' ads' : ' ad'" :useGrouping="false" inputId="integeronly" />
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Ad Indication*</label>
-                                <InputText placeholder="<Blank>" v-model="form.properties.adindication"/>
+                                <InputText placeholder="<Blank>" v-model="form.properties.badge"/>
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Ad Auto renew*</label>
-                                <SelectButton class="w-full" v-model="form.properties.adautorenew" :options="['No','Yes']" aria-labelledby="basic" />
+                                <InputNumber v-model="form.properties.autorenew" :min="0" :suffix="form.properties?.autorenew > 1 ? ' hours' : ' hour'" :useGrouping="false" inputId="integeronly" />
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>New message notifications*</label>
-                                <SelectButton class="w-full" v-model="form.properties.newmessage" :options="['No','Yes']" aria-labelledby="basic" />
+                                <SelectButton class="w-full" v-model="form.properties.sms" :options="bools" optionLabel="title" optionValue="value" aria-labelledby="basic" />
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
                                 <label>Website & Social media link inclusion*</label>
-                                <SelectButton class="w-full" v-model="form.properties.websociallink" :options="['No','Yes']" aria-labelledby="basic" />
+                                <SelectButton class="w-full" v-model="form.properties.links" :options="bools" optionLabel="title" optionValue="value" aria-labelledby="basic" />
                             </div>
                         </TabPanel>
                     </TabView>
                     <template #footer>
                         <Button label="Cancel" icon="pi pi-times" @click="updateVisible = false" text />
                         <Button v-if="activeTab == 0" label="Next" icon="pi pi-arrow-right" @click="activeTab = 1" autofocus />
-                        <Button v-else label="Add" icon="pi pi-check" @click="updatePlan(this)" autofocus />
+                        <Button v-else label="Update" icon="pi pi-check" @click="updatePlan(this)" autofocus />
                     </template>
                 </Dialog>
             </div>

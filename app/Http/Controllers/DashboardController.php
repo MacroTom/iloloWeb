@@ -237,10 +237,12 @@ class DashboardController extends Controller
     public function addCategory(Request $request){
         $request->validate([
             'title' => 'required|string|unique:categories',
+            'category_type' => 'required'
         ]);
 
         Category::create([
-            'title' => $request->title
+            'title' => $request->title,
+            'category_type' => $request->category_type,
         ]);
 
         return redirect()->back()->with('message', 'Category created!');
@@ -336,11 +338,11 @@ class DashboardController extends Controller
         if($request->query('q')){
             $this->search = $request->query('q');
             return Inertia::render('Sections/Plans', [
-                'plans' => Plan::where('title', 'like', '%'. $this->search .'%')->with('categories')->get(),
+                'plans' => Plan::where('title', 'like', '%'. $this->search .'%')->get(),
                 'categories' => $categories
             ]);
         }
-        $plans = Plan::latest()->with('categories')->paginate(6);
+        $plans = Plan::latest()->paginate(6);
         return Inertia::render('Sections/Plans',[
             'plans' => $plans,
             'categories' => $categories
@@ -349,21 +351,29 @@ class DashboardController extends Controller
 
     public function addPlan(Request $request){
         $request->validate([
-            'title' => 'required|string|unique:properties',
+            'icon' => 'required',
+            'title' => 'required|string',
             'price' => 'required',
             'discount' => 'required',
-            'categories' => 'required',
+            'category_type' => 'required',
             'properties' => 'required'
         ]);
 
-        $plan = Plan::create([
+        $result = Plan::where('title', $request->title)->where('category_type', $request->category_type)->count();
+
+        if($result) return redirect()->back()->withErrors([
+            'message' => 'A Plan with that name already exist for the selected category!',
+        ]);
+
+        Plan::create([
+            'tag' => $request->tag,
+            'icon' => $request->icon,
             'title' => $request->title,
             'price' => $request->price,
             'discount' => $request->discount,
+            'category_type' => $request->category_type,
             'properties' => json_encode($request->properties)
         ]);
-
-        $plan->categories()->attach(array_map(fn($category) => $category['id'],$request->categories));
 
         return redirect()->back()->with('message', 'Plan created!');
     }
@@ -376,13 +386,14 @@ class DashboardController extends Controller
         ]);
 
         $plan->update([
+            'tag' => $request->tag,
+            'icon' => $request->icon,
             'title' => $request->title,
             'price' => $request->price,
             'discount' => $request->discount,
+            'category_type' => $request->category_type,
             'properties' => json_encode($request->properties)
         ]);
-
-        $plan->categories()->sync(array_map(fn($category) => $category['id'],$request->categories));
 
         return redirect()->back()->with('message', 'Plan updated!');
     }

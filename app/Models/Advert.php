@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Advert extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $hidden = [
+        'user'
+    ];
 
     public function user(): BelongsTo
     {
@@ -39,5 +44,10 @@ class Advert extends Model
         return new Attribute(
             get: fn($value) => json_decode($value)
         );
+    }
+
+    public function bookmarks(): HasMany
+    {
+        return $this->hasMany(Bookmark::class);
     }
 }

@@ -5,7 +5,7 @@ export const store = reactive({
         title: 'User',
         menuitems: [
             { href: '/profile', icon: 'bx-user', name: 'Profile', method: '' },
-            { href: '/profile/subscriptions', icon: 'bx-diamond', name: 'Subscriptions', method: '' },
+            { href: '/subscriptions', icon: 'bx-diamond', name: 'Subscriptions', method: '' },
             { href: '/logout', icon: 'bx-exit', name: 'Logout', method: 'post' }
         ]
     },
@@ -22,7 +22,7 @@ export const store = reactive({
     profileoptions:[
         { title: 'My Advert', icon: 'bxs-bar-chart-alt-2', counter: 3, href: '/profile' },
         { title: 'My Messages', icon: 'bxs-chat', counter: null, href: '/profile/messages' },
-        { title: 'Subscriptions', icon: 'bxs-gift', counter: null, href: '/profile/subscriptions' },
+        { title: 'Subscriptions', icon: 'bxs-gift', counter: null, href: '/subscriptions' },
         { title: 'Feedback', icon: 'bxs-comment', counter: null, href: '/profile/feedback' },
         { title: 'Bookmark', icon: 'bxs-bookmark', counter: null, href: '/profile/bookmark' },
         { title: 'FAQ', icon: 'bx-question-mark', counter: null, href: '/profile/faq' },
@@ -200,6 +200,23 @@ export const store = reactive({
             },
         ]
     },
+    profilelinks: [
+        {
+            href: '/profile/ads',
+            match: '/profile/ads',
+            label: 'active'
+        },
+        {
+            href: '/profile/ads/review',
+            match: '/profile/ads/review',
+            label: 'review'
+        },
+        {
+            href: '/profile/ads/closed',
+            match: '/profile/ads/closed',
+            label: 'closed'
+        },
+    ],
     location: {
         state: null,
         lga: null,

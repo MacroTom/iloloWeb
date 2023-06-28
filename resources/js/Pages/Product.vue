@@ -12,11 +12,12 @@ import Preloader from '../Components/Preloader.vue';
 import Bottomnavigationbar from '../Components/Bottomnavigationbar.vue';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
-import moment from 'moment';
 import currency from 'currency.js';
+import moment from 'moment';
 export default{
     props: {
-        advert: Object
+        advert: Object,
+        user: Object
     },
     components:{
         Head,
@@ -68,9 +69,9 @@ export default{
         }
         body.classList.add('bg-slate-100');
         this.posted_at = moment(this.advert?.created_at).fromNow();
-        this.joined_at = moment(this.advert?.user.created_at).fromNow();
+        this.joined_at = moment(this.user?.created_at).fromNow();
         this.price = currency(this.advert?.price, {separator: ',', symbol: '₦', precision: 0}).format();
-        console.log(this.advert);
+        // console.log(this.advert, this.user);
     },
 }
 </script>
@@ -136,7 +137,7 @@ export default{
                     </span>
                 </div>
                 <div class="border-b my-6"></div>
-                <div class="mb-4 grid grid-cols-2">
+                <div class="mb-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     <div v-for="(property, key) in advert?.properties" :key="key">
                         <p class="font-Inter text-slate-700 text-sm lg:text-lg font-medium capitalize">{{ property }}</p>
                         <small class="text-[10px] text-slate-400 font-Inter uppercase">{{ key }}</small>
@@ -145,58 +146,81 @@ export default{
                 <div class="border-b my-6"></div>
                 <div class="mb-4 flex items-center gap-2 lg:hidden">
                     <div class="w-12 h-12">
-                        <img class="object-cover w-full h-full rounded-lg" :src="advert?.user.avatar" alt="avatar">
+                        <img class="object-cover w-full h-full rounded-lg" :src="user?.avatar" alt="avatar">
                     </div>
                     <div>
-                        <p class="text-sm text-slate-700 font-Inter font-medium">{{ advert?.user.firstname }} {{ advert?.user.lastname }}</p>
+                        <p class="text-sm text-slate-700 font-Inter font-medium">{{ user?.firstname }} {{ user?.lastname }}</p>
                         <small class="text-xs text-slate-500 font-Inter px-2 py-1 border rounded-lg">Joined {{ joined_at }}</small>
                     </div>
                 </div>
                 <div class="mb-4 flex gap-2 lg:hidden">
                     <button v-if="!showContact" @click="showContact = true" class="w-1/2 button stroke"><i class='bx bx-phone-call text-lg'></i> Show contact</button>
-                    <a :href="`tel:${advert?.user.phone}`" v-else class="w-1/2 button stroke"><span class="text-[#1895B0]">{{ advert?.user.phone }}</span></a>
+                    <a :href="`tel:${user?.phone}`" v-else class="w-1/2 button stroke"><span class="text-[#1895B0]">{{ user?.phone }}</span></a>
                     <button class="w-1/2 button primary"><i class='bx bx-message-dots text-lg'></i> Chat now</button>
+                </div>
+                <div class="border-b my-3 lg:hidden"></div>
+                <div class="mb-4 flex gap-2 lg:hidden">
+                    <button class="button w-1/2 font-Inter"><span class="text-blue-400">Is unavailable ?</span></button>
+                    <button class="button w-1/2 font-Inter"><i class='bx bx-flag text-lg text-red-500'></i> <span class="text-red-500">Report abuse</span></button>
                 </div>
                 <div class="mb-4 min-h-[200px] max-h-[400px] bg-slate-50 p-2">
                     <span class="text-slate-700 text-sm font-Inter">{{ censorText(advert?.description) }}</span>
                 </div>
-            </main>
-            <aside class="w-full hidden lg:block lg:w-4/12 p-4 lg:p-8 bg-white">
-                <div class="mb-4">
-                    <p class="font-Inter text-2xl font-semibold text-[#1895B0] whitespace-nowrap text-overflow text-ellipsis">{{ price }} {{ advert?.negotiable ? '- Negotiable' : '' }}</p>
-                </div>
-                <div class="border-b my-8"></div>
-                <div class="mb-4 flex items-center gap-2">
-                    <div class="w-12 h-12">
-                        <img class="object-cover w-full h-full rounded-lg" :src="advert?.user.avatar" alt="avatar">
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <p class="text-sm text-slate-700 font-Inter font-medium">{{ advert?.user.firstname }} {{ advert?.user.lastname }}</p>
-                        <small class="text-xs text-slate-500 font-Inter px-2 py-1 border rounded-lg">Joined {{ joined_at }}</small>
-                    </div>
-                </div>
-                <div class="mb-4 flex flex-col gap-3">
-                    <a :href="advert?.user.facebook_link ?  advert?.user.facebook_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2">
+                <div v-if="user?.facbook_link" class="lg:hidden mb-4 grid grid-cols-2 gap-3">
+                    <a :href="user?.facebook_link ?  user?.facebook_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2 justify-center rounded-lg">
                         <i class='bx bxl-facebook-circle text-xl text-slate-600'></i>
-                        <span class="text-sm">Facebook Page</span>
+                        <span class="text-sm">Facebook</span>
                     </a>
-                    <a :href="advert?.user.instagram_link ?  advert?.user.instagram_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2">
+                    <a :href="user?.instagram_link ?  user?.instagram_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2 justify-center rounded-lg">
                         <i class='bx bxl-instagram-alt text-xl text-slate-600'></i>
-                        <span class="text-sm">Instagram Page</span>
+                        <span class="text-sm">Instagram</span>
                     </a>
-                    <a :href="advert?.user.twitter_link ?  advert?.user.twitter_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2">
+                    <a :href="user?.twitter_link ?  user?.twitter_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2 justify-center rounded-lg">
                         <i class='bx bxl-twitter text-xl text-slate-600'></i>
-                        <span class="text-sm">Twitter Page</span>
+                        <span class="text-sm">Twitter</span>
                     </a>
-                    <a :href="advert?.user.website_link ?  advert?.user.website_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2">
+                    <a :href="user?.website_link ?  user?.website_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2 justify-center rounded-lg">
                         <i class='bx bx-globe text-xl text-slate-600'></i>
                         <span class="text-sm">Website</span>
                     </a>
                 </div>
+            </main>
+            <aside class="w-full h-fit hidden lg:block lg:w-4/12 p-4 lg:p-8 bg-white">
+                <div class="mb-4">
+                    <p class="font-Inter text-2xl font-semibold text-[#1895B0] whitespace-nowrap text-overflow text-ellipsis">{{ price }} {{ advert?.negotiable ? '- Negotiable' : '' }}</p>
+                </div>
+                <div class="border-b my-6"></div>
+                <div class="mb-4 flex items-center gap-2">
+                    <div class="w-12 h-12">
+                        <img class="object-cover w-full h-full rounded-lg" :src="user?.avatar" alt="avatar">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-sm text-slate-700 font-Inter font-medium">{{ user?.firstname }} {{ user?.lastname }}</p>
+                        <small class="text-xs text-slate-500 font-Inter px-2 py-1 border rounded-lg">Joined {{ joined_at }}</small>
+                    </div>
+                </div>
                 <div class="mb-4 flex gap-2">
                     <button v-if="!showContact" @click="showContact = true" class="w-1/2 button stroke"><i class='bx bx-phone-call text-lg'></i> Show contact</button>
-                    <a :href="`tel:${advert?.user.phone}`" v-else class="w-1/2 button stroke"><span class="text-[#1895B0]">{{ advert?.user.phone }}</span></a>
+                    <a :href="`tel:${user?.phone}`" v-else class="w-1/2 button stroke"><span class="text-[#1895B0]">{{ user?.phone }}</span></a>
                     <button class="w-1/2 button primary"><i class='bx bx-message-dots text-lg'></i> Chat now</button>
+                </div>
+                <div v-if="user?.facbook_link" class="mb-4 grid grid-cols-2 gap-3">
+                    <a :href="user?.facebook_link ?  user?.facebook_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2 justify-center rounded-lg">
+                        <i class='bx bxl-facebook-circle text-xl text-slate-600'></i>
+                        <span class="text-sm">Facebook</span>
+                    </a>
+                    <a :href="user?.instagram_link ?  user?.instagram_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2 justify-center rounded-lg">
+                        <i class='bx bxl-instagram-alt text-xl text-slate-600'></i>
+                        <span class="text-sm">Instagram</span>
+                    </a>
+                    <a :href="user?.twitter_link ?  user?.twitter_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2 justify-center rounded-lg">
+                        <i class='bx bxl-twitter text-xl text-slate-600'></i>
+                        <span class="text-sm">Twitter</span>
+                    </a>
+                    <a :href="user?.website_link ?  user?.website_link: '#'" class="flex items-center gap-2 py-2 bg-slate-50 shadow px-2 justify-center rounded-lg">
+                        <i class='bx bx-globe text-xl text-slate-600'></i>
+                        <span class="text-sm">Website</span>
+                    </a>
                 </div>
                 <div class="border-b my-6"></div>
                 <div class="mb-4 flex gap-2">

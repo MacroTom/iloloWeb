@@ -29,6 +29,11 @@ class User extends Authenticatable
     protected $hidden = [
         'google_id',
         'facebook_id',
+        'facebook_link',
+        'twitter_link',
+        'instagram_link',
+        'website_link',
+        'subscriptions',
         'presence',
         'password',
         'remember_token',
@@ -57,7 +62,7 @@ class User extends Authenticatable
 
     public function bookmarks(): HasMany
     {
-        return $this->hasMany(Bookmark::class);
+        return $this->hasMany(Bookmark::class)->latest();
     }
 
     public function comments(): HasMany
@@ -69,4 +74,48 @@ class User extends Authenticatable
     {
         return $this->hasMany(Subscription::class);
     }
+
+    public function activeSubscriptions(){
+        return $this->subscriptions->where('status', 'active');
+    }
+
+    public function hasSubscriptionInCategory($category){
+        $active = $this->activeSubscriptions();
+        if($active){
+            $subs = $active->map(function($sub){
+                return $sub->plan->category_type;
+            });
+            if(in_array($category,$subs->toArray())){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public function canShowLinks(){
+        $active = $this->activeSubscriptions();
+        if($active){
+            $subs = $active->map(function($sub){
+                return $sub->plan->properties->links;
+            });
+            if(in_array(true,$subs->toArray())){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    // public function showLinks($category){
+    //     $result = $this->activeSubscriptions();
+    //     if($result){
+
+    //     }
+    // }
+
 }

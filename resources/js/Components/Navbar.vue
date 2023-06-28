@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/vue3';
 import DropDownList from './DropDownList.vue';
 import axios from 'axios';
 import { store } from '../store.js';
+import FormTab from './Form.vue';
 export default{
     props:{
         bg: {
@@ -20,7 +21,8 @@ export default{
     },
     components:{
         Link,
-        DropDownList
+        DropDownList,
+        FormTab
     },
     data(){
         return{
@@ -146,6 +148,7 @@ nav *{
 
 <template>
     <!-- For larger screens -->
+    <FormTab/>
     <nav :class="background +' '+ border +' '+ styles" class="hidden lg:flex w-full h-[60px] lg:px-8 xl:px-28 items-center fixed z-[500] top-0 left-0">
         <div class="mr-10">
             <Link href="/">
@@ -159,7 +162,7 @@ nav *{
                 :items="categories"
                 :itemsLabel="['title','adverts']"
                 innerList="subcategories"/>
-            <li><Link href="/profile/subscriptions">Pricing</Link></li>
+            <li><Link href="/subscriptions">Pricing</Link></li>
             <li><Link href="#">Contact</Link></li>
         </ul>
         <div class="mr-6">
@@ -201,11 +204,11 @@ nav *{
                             <i class='bx bx-chevron-right'></i>
                         </li>
                         <li>
-                            <Link href="#">My ads</Link>
+                            <Link href="/profile/ads">My ads</Link>
                             <i class='bx bx-chevron-right'></i>
                         </li>
                         <li>
-                            <Link href="#">Bookmarks</Link>
+                            <Link href="/profile/bookmarks">Bookmarks</Link>
                             <i class='bx bx-chevron-right'></i>
                         </li>
                     </ul>
@@ -244,11 +247,11 @@ nav *{
                                 <i class='bx bx-chevron-right'></i>
                             </li>
                             <li>
-                                <Link href="#">My ads</Link>
+                                <Link href="/profile/ads">My ads</Link>
                                 <i class='bx bx-chevron-right'></i>
                             </li>
                             <li>
-                                <Link href="#">Bookmarks</Link>
+                                <Link href="/profile/bookmarks">Bookmarks</Link>
                                 <i class='bx bx-chevron-right'></i>
                             </li>
                         </ul>
@@ -292,7 +295,7 @@ nav *{
                     </li>
                 </ul>
             </li>
-            <li><Link class="font-semibold" href="/profile/subscriptions">Pricing</Link></li>
+            <li><Link class="font-semibold" href="/subscriptions">Pricing</Link></li>
             <li><Link class="font-semibold" href="#">Contact</Link></li>
         </ul>
     </nav>

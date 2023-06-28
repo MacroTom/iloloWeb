@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
+            $table->string('category_type');
+            $table->string('tag')->nullable();
+            $table->string('icon');
+            $table->string('title');
             $table->double('price');
             $table->unsignedInteger('discount')->default(0);
             $table->text('properties');

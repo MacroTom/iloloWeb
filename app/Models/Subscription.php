@@ -21,4 +21,8 @@ class Subscription extends Model
     {
         return $this->belongsTo(Plan::class);
     }
+
+    public function transactions(){
+        return $this->morphMany(Transaction::class, 'transactable')->latest();
+    }
 }

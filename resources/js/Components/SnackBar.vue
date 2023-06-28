@@ -12,7 +12,7 @@ export default{
             },
             body: {
                 info: 'bg-[#e9e9ff] text-[#696cff]',
-                success: 'bg-[#1895B0] text-white',
+                success: 'bg-[#f2fdff] text-[#1895B0]',
                 warning: 'bg-[#fff2e2] text-[#CC8925]',
             }
         }

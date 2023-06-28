@@ -14,6 +14,7 @@ import Preloader from '../Components/Preloader.vue';
 import Advert from '../Components/Advert.vue';
 import HeroSection from '../Components/HeroSection.vue';
 import Sliders from '../Components/Sliders.vue';
+import SnackBar from '../Components/SnackBar.vue';
 export default {
     props:{
         adverts: Array,
@@ -36,7 +37,8 @@ export default {
         Preloader,
         Advert,
         HeroSection,
-        Sliders
+        Sliders,
+        SnackBar
     },
     data(){
         return {
@@ -55,6 +57,7 @@ export default {
     </Head>
     <!-- <Heading/> -->
     <Preloader/>
+    <SnackBar/>
     <Navbar bg="bg-transparent" scroll border="border-0"/>
     <section class="w-full relative left-0 top-0">
         <HeroSection/>
@@ -82,14 +85,13 @@ export default {
             </div>
         </div> -->
         <main class="flex w-full h-full gap-3 lg:px-8 xl:px-28 bg-slate-50">
-            <FormTab/>
             <!-- <Categorysidebar>
                 <Category v-for="(category,index) in categories"
                 :key="index"
                 :category="category"
                 />
             </Categorysidebar> -->
-            <section class="p-3 lg:py-3 lg:px-0 relative bg-slate-50">
+            <section class="w-full p-3 lg:py-3 lg:px-0 relative bg-slate-50">
                 <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4">
                     <!-- <div class="w-1/3 py-10 rounded-lg flex flex-col items-center justify-center gap-4 font-medium text-white bg-[#4074FB]/60 hover:bg-[#4074FB]/70 cursor-pointer shadow-lg">
                         <span>Want to sell</span>
@@ -99,7 +101,7 @@ export default {
                     <Banner class="w-2/3"/> -->
                     <Sliders/>
                     <section class="lg:col-start-3 lg:col-end-4 shadow-md rounded-lg">
-                        <img class="object-cover w-full h-full rounded-lg" src="/images/banner_4.png" alt="banner_4"/>
+                        <img class="object-cover w-full h-full rounded-lg" src="/images/banner_5.png" alt="banner_5"/>
                     </section>
                     <section class="lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 shadow-md rounded-lg">
                         <img class="object-cover w-full h-full rounded-lg" src="/images/banner_2.png" alt="banner_2"/>
@@ -108,7 +110,7 @@ export default {
                 <div class="py-3 mb-3 text-xl font-semibold lg:mt-4">
                     Special offers
                 </div>
-                <div class="flex w-full gap-2 p-2 overflow-x-auto scrollbar-hide">
+                <div class="w-full flex gap-2 p-2 overflow-x-auto scrollbar-hide">
                     <Product v-for="(advert,index) in special"
                     :advert="advert"
                     :key="index"/>

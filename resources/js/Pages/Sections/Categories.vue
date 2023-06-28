@@ -20,8 +20,14 @@ export default{
             updateVisible: false,
             values: [],
             form: {
-                title: ''
-            }
+                title: '',
+                category_type: ''
+            },
+            category_types: [
+                {title: 'Land & Properties', value: 'L'},
+                {title: 'Cars', value: 'C'},
+                {title: 'Others', value: 'O'}
+            ]
         }
     },
     methods:{
@@ -46,7 +52,8 @@ export default{
             button.disabled = true;
             this.form = {
                 id: data.id,
-                title: data.title
+                title: data.title,
+                category_type: data?.category_type
             }
             this.updateVisible = true;
         },
@@ -56,7 +63,8 @@ export default{
                 onSuccess: (res) => {
                     this.$toast.add({ severity: 'success', summary: 'Successful', detail: res.props.flash.message, life: 3000 });
                     this.form = {
-                        title: ''
+                        title: '',
+                        category_type: ''
                     }
                     this.updateVisible = false;
                 },
@@ -166,11 +174,10 @@ export default{
                         <InputText id="title" v-model="form.title" />
                         <small id="values-help">This is the name of the category! <strong>e.g Electronics</strong></small>
                     </div>
-                    <!-- <div class="flex flex-column gap-2 mb-2">
-                        <label for="title">Label</label>
-                        <InputText id="title" v-model="form.label" />
-                        <small id="values-help">This is the text that will show above the option component! <strong>e.g Brand</strong>. If not label is provided, the title will be used instead!</small>
-                    </div> -->
+                    <div class="flex flex-column gap-2 mb-2">
+                        <label for="title">Category Type</label>
+                        <Dropdown v-model="form.category_type" :options="category_types" optionLabel="title" optionValue="value" placeholder="" class="w-full" />
+                    </div>
                     <!-- <div class="flex flex-column gap-2">
                         <label for="values">Values*</label>
                         <Chips v-model="form.propertyValues" separator="," />
@@ -186,6 +193,10 @@ export default{
                         <label for="title">Title*</label>
                         <InputText id="title" v-model="form.title" />
                         <small id="values-help">This is the name of the category! <strong>e.g Electronics</strong></small>
+                    </div>
+                    <div class="flex flex-column gap-2 mb-2">
+                        <label for="title">Category Type</label>
+                        <Dropdown v-model="form.category_type" :options="category_types" optionLabel="title" optionValue="value" placeholder="" class="w-full" />
                     </div>
                     <!-- <div class="flex flex-column gap-2 mb-2">
                         <label for="title">Label</label>

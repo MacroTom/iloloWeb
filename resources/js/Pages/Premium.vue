@@ -1,5 +1,5 @@
 <script>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import Heading from '../Components/Heading.vue';
 import { store } from '../store.js';
 import Plan from '../Components/Plan.vue';
@@ -8,207 +8,63 @@ import CategoryTab from '../Components/CategoryTab.vue';
 import Navbar from '../Components/Navbar.vue';
 import Preloader from '../Components/Preloader.vue';
 import Bottomnavigationbar from '../Components/Bottomnavigationbar.vue';
+import SnackBar from '../Components/SnackBar.vue';
 export default {
     props:{
-        categories: Array,
+        plancategories: Array,
     },
     components:{
-        Heading,
-        Head,
-        Link,
-        Plan,
-        Footer,
-        CategoryTab,
-        Navbar,
-        Preloader,
-        Bottomnavigationbar
-    },
+    Heading,
+    Head,
+    Link,
+    Plan,
+    Footer,
+    CategoryTab,
+    Navbar,
+    Preloader,
+    Bottomnavigationbar,
+    SnackBar
+},
     data(){
         return {
             store,
-            plancategories:[
-                {
-                    title: 'Cars',
-                    icon: 'bx-car',
-                    plans: [
-                        {
-                            tag: 'Most Popular',
-                            icon: 'bx-trending-up',
-                            title: 'Regular',
-                            price: 3999,
-                            discount: 0,
-                            properties: {
-                                count: 5,
-                                autorenew: 24,
-                                sms: false,
-                                badge: null,
-                                links: null
-                            }
-                        },
-                        {
-                            tag: 'Recommended',
-                            icon: 'bx-badge-check',
-                            title: 'Premium',
-                            price: 5999,
-                            discount: 0,
-                            properties: {
-                                count: 20,
-                                autorenew: 12,
-                                sms: true,
-                                badge: 'TOP',
-                                links: null
-                            }
-                        },
-                        {
-                            tag: 'Best value',
-                            icon: 'bx-diamond',
-                            title: 'Diamond',
-                            price: 9999,
-                            discount: 0,
-                            properties: {
-                                count: 100,
-                                autorenew: 3,
-                                sms: true,
-                                badge: 'VIP',
-                                links: true
-                            }
-                        }
-                    ]
-                },
-                {
-                    title: 'Land & Properties',
-                    icon: 'bx-home',
-                    plans: [
-                        {
-                            active: true,
-                            icon: 'bx-shopping-bag',
-                            title: 'Basic',
-                            price: null,
-                            discount: 0,
-                            properties: {
-                                count: 1,
-                                autorenew: null,
-                                sms: false,
-                                badge: null,
-                                links: null
-                            }
-                        },
-                        {
-                            tag: 'Most Popular',
-                            icon: 'bx-trending-up',
-                            title: 'Regular',
-                            price: 3999,
-                            discount: 0,
-                            properties: {
-                                count: 5,
-                                autorenew: 24,
-                                sms: false,
-                                badge: null,
-                                links: null
-                            }
-                        },
-                        {
-                            tag: 'Recommended',
-                            icon: 'bx-badge-check',
-                            title: 'Premium',
-                            price: 5999,
-                            discount: 0,
-                            properties: {
-                                count: 20,
-                                autorenew: 12,
-                                sms: true,
-                                badge: 'TOP',
-                                links: null
-                            }
-                        },
-                        {
-                            tag: 'Best value',
-                            icon: 'bx-diamond',
-                            title: 'Diamond',
-                            price: 9999,
-                            discount: 0,
-                            properties: {
-                                count: 100,
-                                autorenew: 3,
-                                sms: true,
-                                badge: 'VIP',
-                                links: true
-                            }
-                        }
-                    ]
-                },
-                {
-                    title: 'Others items',
-                    icon: 'bx-category',
-                    plans: [
-                        {
-                            active: true,
-                            icon: 'bx-shopping-bag',
-                            title: 'Basic',
-                            price: null,
-                            discount: 0,
-                            properties: {
-                                count: 1,
-                                autorenew: null,
-                                sms: false,
-                                badge: null,
-                                links: null
-                            }
-                        },
-                        {
-                            tag: 'Most Popular',
-                            icon: 'bx-trending-up',
-                            title: 'Regular',
-                            price: 3999,
-                            discount: 0,
-                            properties: {
-                                count: 5,
-                                autorenew: 24,
-                                sms: false,
-                                badge: null,
-                                links: null
-                            }
-                        },
-                        {
-                            tag: 'Recommended',
-                            icon: 'bx-badge-check',
-                            title: 'Premium',
-                            price: 5999,
-                            discount: 0,
-                            properties: {
-                                count: 20,
-                                autorenew: 12,
-                                sms: true,
-                                badge: 'TOP',
-                                links: null
-                            }
-                        },
-                        {
-                            tag: 'Best value',
-                            icon: 'bx-diamond',
-                            title: 'Diamond',
-                            price: 9999,
-                            discount: 0,
-                            properties: {
-                                count: 100,
-                                autorenew: 3,
-                                sms: true,
-                                badge: 'VIP',
-                                links: true
-                            }
-                        }
-                    ]
-                }
-            ],
             plans: [],
+            form: {
+                duration: 1
+            }
         }
     },
     methods:{
         back(){
             window.history.back();
+        },
+        buyPlan(id,evt){
+            let button = evt.target;
+            button.disabled = true;
+            router.post(`/plan/${id}/buy`, this.form,
+            {
+                onSuccess: (res) => {
+                    let url = res.props.flash.data.checkout_url;
+                    window.location = url;
+                    this.store.snackbar.add({
+                        message: "Redirecting to Paystack!",
+                        severity: "success"
+                    });
+                    button.disabled = false;
+                },
+                onError: (err) => {
+                    this.store.snackbar.add({
+                        message: err.message,
+                        severity: "warning"
+                    });
+                    button.disabled = false;
+                },
+            },
+            );
         }
     },
     mounted(){
+        // console.log(this.plancategories);
     }
 }
 </script>
@@ -221,6 +77,7 @@ export default {
         <Heading/>
     </div> -->
     <Preloader/>
+    <SnackBar/>
     <div class="relative top-[60px]">
         <section class="w-full flex flex-col items-center min-h-[calc(100vh-60px)] bg-slate-50">
             <Navbar/>
@@ -246,13 +103,16 @@ export default {
                         <Plan
                             v-for="(plan,index) in plans"
                             :key="index"
+                            :id="plan?.id"
                             :icon="plan?.icon"
                             :title="plan?.title"
                             :price="plan?.price"
                             :discount="plan?.discount"
-                            :active="plan?.active"
                             :properties="plan?.properties"
-                            :tag="plan?.tag"/>
+                            :tag="plan?.tag"
+                            :action="buyPlan"
+                            :active="!plan?.price ? true : false"
+                            :loading="plan?.id"/>
                     </section>
                 </section>
             </main>

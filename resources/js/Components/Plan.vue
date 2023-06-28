@@ -1,17 +1,29 @@
 <script>
+import { router } from '@inertiajs/vue3';
+import { store } from '../store';
+import FlatButton from './FlatButton.vue';
 export default {
+    components:{
+        FlatButton
+    },
     props:{
+        id: Number,
         icon: String,
         title: String,
         price: Number,
         discount: Number,
         properties: Object,
         tag: String,
-        active: Boolean
+        active: Boolean,
+        action: Function,
     },
     data(){
         return{
+            store
         }
+    },
+    methods:{
+
     }
 }
 </script>
@@ -144,6 +156,6 @@ export default {
         </main>
         <div class="divider"></div>
         <button v-if="active" class="w-full button stroke font-Inter">Active</button>
-        <button v-else="active" class="w-full button primary font-Inter">Get Started</button>
+        <FlatButton class="w-full" @click="$page.props.auth?.user ? action(id,$event) : store.toggleFormTab('signin')" v-else="active" label="Get started" primary/>
     </section>
 </template>

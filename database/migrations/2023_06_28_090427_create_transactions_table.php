@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bookmarks', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('advert_id')
-            ->constrained()->onDelete("cascade");
-            $table->foreignId('user_id')
-            ->constrained()->onDelete("cascade");
+            $table->string("reference");
+            $table->foreignId("user_id")->constrained()
+            ->onDelete("cascade");
+            $table->morphs("transactable");
+            $table->double("amount");
+            $table->enum("status",["pending","completed","failed"])->default("pending");
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bookmarks');
+        Schema::dropIfExists('transactions');
     }
 };

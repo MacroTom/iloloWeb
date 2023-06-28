@@ -50,7 +50,7 @@ export default{
     <section id="hero">
         <div id="banner">
             <div class="w-8/12 lg:w-7/12 flex flex-col items-start justify-center z-10 gap-y-2 lg:gap-y-6">
-                <p class="font-Inter lg:text-lg lg:text-normal">Promote your products for free.</p>
+                <p class="font-Inter text-sm lg:text-lg lg:text-normal">Promote your products for free.</p>
                 <h1 class="font-bold text-2xl lg:text-7xl">
                     Help your business grow
                 </h1>

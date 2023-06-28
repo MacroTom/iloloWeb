@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\HandlePayment;
 use App\Actions\ResetPassword;
 use App\Actions\SendOTP;
 use Inertia\Inertia;
@@ -8,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AdvertController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,19 +37,26 @@ Route::middleware('guest')->group(function(){
 });
 
 Route::get('/advert/{id}', [AdvertController::class, 'advert']);
+Route::get('/subscriptions', [AccountController::class, 'premium']);
+Route::post('/payment/webhook', [HandlePayment::class, 'handleWebhook']);
+Route::post('/payment/callback', [HandlePayment::class, 'handleCallback']);
 
 Route::middleware('auth')->group(function(){
+    Route::get('/transaction/cancelled', [TransactionController::class, 'cancelTransaction']);
     Route::get('/postad', [AdvertController::class, 'index']);
     Route::post('/postad', [AdvertController::class, 'store']);
+    Route::post('/plan/{id}/buy', [AdvertController::class, 'buyPlan']);
 
     Route::get('/profile', [AccountController::class, 'profile']);
-    Route::get('/profile/ads/active', [AccountController::class, 'active']);
+    Route::get('/profile/ads', [AccountController::class, 'active']);
     Route::get('/profile/ads/review', [AccountController::class, 'review']);
     Route::get('/profile/ads/closed', [AccountController::class, 'closed']);
+    Route::get('/profile/bookmarks', [AccountController::class, 'bookmarks']);
+    Route::post('/profile/bookmarks/{id}/add', [AccountController::class, 'addBookmark']);
+    Route::post('/profile/bookmarks/{id}/remove', [AccountController::class, 'removeBookmark']);
     Route::get('/profile/feedback', [AccountController::class, 'feedback']);
     Route::get('/profile/opinions', [AccountController::class, 'opinions']);
     Route::get('/profile/messages', [AccountController::class, 'messages']);
-    Route::get('/profile/subscriptions', [AccountController::class, 'premium']);
     Route::post('/logout', [AccountController::class, 'logout']);
 });
 

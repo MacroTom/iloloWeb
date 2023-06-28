@@ -1,5 +1,5 @@
 <script>
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, Link } from '@inertiajs/vue3';
 import draggable from 'vuedraggable';
 import { store } from '../store.js';
 import Heading from '../Components/Heading.vue';
@@ -9,12 +9,14 @@ import FlatButton from '../Components/FlatButton.vue';
 import SnackBar from '../Components/SnackBar.vue';
 import Navbar from '../Components/Navbar.vue';
 import Preloader from '../Components/Preloader.vue';
+import axios from 'axios';
 export default{
     props: {
         properties: Object,
         categories: Object,
         states: Object,
-        errors: Object
+        errors: Object,
+        advert: Object
     },
     components:{
         Head,
@@ -25,7 +27,8 @@ export default{
         draggable,
         SnackBar,
         Navbar,
-        Preloader
+        Preloader,
+        Link
     },
     data(){
         return{
@@ -71,9 +74,11 @@ export default{
     },
     watch: {
         // whenever category changes, this function will run
-        'form.category'() {
-            this.form.properties = {}
-            this.placeholder.properties = {}
+        'form.category'(newvalue, oldvalue) {
+            if(oldvalue !== ''){
+                this.form.properties = {}
+                this.placeholder.properties = {}
+            }
             this.setProps();
         }
     },
@@ -82,7 +87,7 @@ export default{
             const files = e.target.files;
             for(const file of files){
                 if((file.type === 'image/png' || file.type === 'image/jpeg') && file.size < 5242880 && this.form.photos.length <= 12){
-                    this.form.photos.push(file);
+                    this.uploadPhoto(file);
                 }
             }
         },
@@ -141,7 +146,7 @@ export default{
             const files = event.dataTransfer.files;
             for(const file of files){
                 if((file.type === 'image/png' || file.type === 'image/jpeg') && file.size < 5242880 && this.form.photos.length <= 12){
-                    this.form.photos.push(file);
+                    this.uploadPhoto(file);
                 }
             }
             event.target.nodeName === 'DIV' && event.target.classList.remove('dragover');
@@ -249,14 +254,21 @@ export default{
                 this.loading.continue = false;
             }
         },
-        submitForm(){
-            router.post('postad/', this.form,
+        submitForm(boost,edit){
+            let url = edit ? `?edit=${this.$page.props?.advert?.id}` : '';
+            router.post(`/postad${url}`, this.form,
             {
                 onSuccess: (res) => {
-                    console.log(res);
                     this.clearForm();
-                    this.loading.continue = false;
+                    if(boost){
+                        this.store.snackbar.add({
+                            message: "Redirecting to Plans page!",
+                            severity: "success"
+                        });
+                        window.location = "/subscriptions";
+                    }
                     this.currentTimeline += 2;
+                    this.loading.continue = false;
                 },
                 onError: (err) => {
                     this.store.snackbar.add({
@@ -268,7 +280,27 @@ export default{
             },
             );
         },
-        gallery(){
+        uploadPhoto(file){
+            this.store.snackbar.add({
+                message: "Uploading photos!",
+                severity: "info"
+            });
+            const url = "https://api.cloudinary.com/v1_1/daye98q4y/image/upload";
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", "ybqvdxtk");
+            axios.post(url, formData)
+            .then((res)=>{
+                this.form.photos.push(res.data.secure_url);
+            })
+            .catch((err)=>{
+                this.store.snackbar.add({
+                    message: "Could not upload photos!",
+                    severity: "warning"
+                });
+            });
+        },
+        gallery(boost=false,edit=false){
             this.loading.continue = true;
             if (this.checkForRequiredFields('gallery')) {
                 if(this.form.photos.length < 3){
@@ -280,7 +312,7 @@ export default{
                 }
                 else{
                     // Submit the form
-                    this.submitForm();
+                    this.submitForm(boost,edit);
                 }
             }
             else{
@@ -289,6 +321,25 @@ export default{
                     severity: "info"
                 });
                 this.loading.continue = false;
+            }
+        },
+        updateFields(){
+            this.form = {
+                title: this.advert.title,
+                category: this.advert.category.id,
+                subcategory: this.advert.subcategory.id,
+                state: this.advert.state,
+                lga: this.advert.lga,
+                price: this.advert.price,
+                negotiable: this.advert.negotiable,
+                description: this.advert.description,
+                photos: this.advert.photos,
+                properties: this.advert.properties
+            }
+            this.placeholder = {
+                category: this.advert.subcategory.title,
+                state: this.advert.state,
+                properties: this.advert.properties
             }
         }
     },
@@ -302,7 +353,8 @@ export default{
             }
         }
         body.classList.add('bg-slate-100');
-        // console.log(this.properties);
+        this.$page.props.advert && this.updateFields();
+        // console.log(this.advert);
     },
 }
 </script>
@@ -473,7 +525,7 @@ export default{
                         <draggable class="w-full grid grid-cols-3 lg:grid-cols-2 gap-2 lg:gap-3" tag="div" v-model="form.photos" item-key="name">
                             <template #item="{ element: image, index: key }">
                                 <div
-                                    :style="`background-image: url(${createURL(image)});`"
+                                    :style="`background-image: url(${image});`"
                                     class="h-[100px] lg:h-[130px] relative rounded-lg bg-no-repeat bg-cover bg-center flex-shrink-0 group lg:cursor-grab"
                                     >
                                     <div @click="deleteFile(key)"
@@ -498,13 +550,35 @@ export default{
                     <div class="flex gap-2 mb-2">
                         <FlatButton @click="prevTimeline"
                             label="Back"
-                            stroke
                             :loading="loading.back"
                         />
-                        <FlatButton @click="gallery"
+                        <FlatButton v-if="!$page.props?.advert" @click="gallery(false)"
                             class="flex-1"
-                            label="Continue"
+                            label="Post Ad"
                             primary
+                            :loading="loading.continue"
+                        />
+                        <FlatButton v-else @click="gallery(false,true)"
+                            class="flex-1"
+                            label="Update Ad"
+                            primary
+                            :loading="loading.continue"
+                        />
+                    </div>
+
+                    <div class="my-8 border-b"></div>
+
+                    <p class="text-xs text-slate-600 mb-6"><strong>OPTIONAL:</strong> Boost your Advert to allow customers find it faster! We offer affordable plans, each comes with its own perks.</p>
+
+                    <div class="flex gap-2 mb-2">
+                        <FlatButton v-if="!$page.props?.advert" @click="gallery(true)"
+                            class="border-2 flex-1 text-[#1895B0]"
+                            label="Boost Advert"
+                            :loading="loading.continue"
+                        />
+                        <FlatButton v-else @click="gallery(true,true)"
+                            class="border-2 flex-1 text-[#1895B0]"
+                            label="Boost Advert"
                             :loading="loading.continue"
                         />
                     </div>
@@ -514,11 +588,8 @@ export default{
                 <div v-else>
                     <h1 class="font-semibold text-2xl text-slate-800 mb-4">The Advert has been created!</h1>
                     <p class="text-sm text-slate-600 leading-6 mb-4">Your Advert has been created, but it's not available to the Buyers yet. We have to make a quick verification of provided information before it's published. It could take a while.</p>
-                    <FlatButton @click="currentTimeline = 0"
-                        class="w-full md:w-fit"
-                        label="Go to advert page"
-                        primary
-                    />
+                    <Link v-if="!$page.props?.advert" href="/profile/ads/review" class="button primary w-full md:w-fit">Go to advert page</Link>
+                    <Link v-else href="/profile/ads" class="button primary w-full md:w-fit">Go to advert page</Link>
                 </div>
             </main>
             <section class="hidden lg:block w-4/12 xl:w-5/12 bg-white">
