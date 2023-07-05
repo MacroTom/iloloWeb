@@ -21,4 +21,4 @@ jobs:
         host: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
+        port: 21
