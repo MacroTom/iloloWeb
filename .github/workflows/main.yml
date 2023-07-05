@@ -25,8 +25,8 @@ jobs:
             username: ${{ secrets.FTP_USERNAME }}
             password: ${{ secrets.FTP_PASSWORD }}
             server: ${{ secrets.FTP_SERVER }}
-            ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+            #ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
             port: 21
             local_path: './static/*'
-            remote_path: '/var/www/app'
+            remote_path: '/home/ilolo/public_html/'
             sftp_only: true
