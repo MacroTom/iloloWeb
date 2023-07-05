@@ -1,16 +1,18 @@
 on: push
-name: 🚀 Deploy website on push
+name: Publish Website
 jobs:
   web-deploy:
-    name: 🎉 Deploy
+    name: 🚀 Deploy Website Every Commit
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
+    - name: 🚚 Get Latest Code
       uses: actions/checkout@v3
-    
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+
+    - name: 📂 Sync Files
+      uses: SamKirkland/web-deploy@v1
       with:
-        server: ${{ secrets.ftp_server }}
-        username: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_password }}
+        target-server: ilolo.com
+        remote-user: ${{ secrets.REMOTE_USER}}
+        private-ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        destination-path: ~/public_html/test/
+        source-path: ./home/ilolo/
