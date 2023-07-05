@@ -53,7 +53,7 @@ export default{
         },
         pusherSubscribe(){
             if(this.user_id){
-                this.channel = this.pusher.subscribe("private-chat." + this.user_id);
+                this.channel = this.pusher.subscribe("chat." + this.user_id);
                 this.channel.bind('new-message', (data) => {
                     // handle new-message event
                     store.messages.push(data.payload.message);

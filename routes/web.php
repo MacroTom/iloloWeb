@@ -46,6 +46,9 @@ Route::get('/subscriptions', [AccountController::class, 'premium']);
 Route::post('/payment/webhook', [HandlePayment::class, 'handleWebhook']);
 Route::post('/payment/callback', [HandlePayment::class, 'handleCallback']);
 
+// Pusher presence webhook
+Route::post('/pusher/webhook/presence', [MessagesController::class, 'handleWebhook']);
+
 Route::middleware('auth')->group(function(){
     Route::get('/transaction/cancelled', [TransactionController::class, 'cancelTransaction']);
     Route::get('/postad', [AdvertController::class, 'index']);
