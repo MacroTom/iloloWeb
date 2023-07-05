@@ -29,4 +29,4 @@ jobs:
             port: 21
             local_path: './static/*'
             remote_path: '/home/ilolo/public_html/'
-            sftp_only: true
+            #sftp_only: true
