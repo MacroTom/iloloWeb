@@ -26,6 +26,6 @@ jobs:
             password: ${{ secrets.FTP_PASSWORD }}
             server: ${{ secrets.FTP_SERVER }}
             ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-            port: 21
+            port: 22
             local_path: './static/*'
             remote_path: '/var/www/app'
