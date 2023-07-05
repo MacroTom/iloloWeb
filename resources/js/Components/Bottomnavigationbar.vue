@@ -83,7 +83,7 @@ export default{
             <i class='text-2xl pointer-events-none bx bx-plus'></i>
             <span class="text-xs font-light select-none">Sell</span>
         </button>
-        <button @click="goto('/profile/messages')"
+        <button @click="$page.props.auth?.user ? store.toggleChatWindow() : store.toggleFormTab()"
             class="flex flex-col items-center justify-center flex-1 text-[#18849B] font-Inter">
             <i class='text-2xl pointer-events-none bx bx-message-dots'></i>
             <span class="text-xs font-light select-none">Message</span>

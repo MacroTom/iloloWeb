@@ -9,6 +9,7 @@ import FlatButton from '../Components/FlatButton.vue';
 import SnackBar from '../Components/SnackBar.vue';
 import Navbar from '../Components/Navbar.vue';
 import Preloader from '../Components/Preloader.vue';
+import InternetChecker from '../Components/InternetChecker.vue';
 import axios from 'axios';
 export default{
     props: {
@@ -28,7 +29,8 @@ export default{
         SnackBar,
         Navbar,
         Preloader,
-        Link
+        Link,
+        InternetChecker
     },
     data(){
         return{
@@ -46,6 +48,7 @@ export default{
                 photos: [],
                 properties: {}
             },
+            processing: false,
             placeholder: {
                 category: '',
                 state: '',
@@ -66,6 +69,7 @@ export default{
                 { label: '03', description: 'Gallery' },
                 { description: 'Done' },
             ],
+            internet: navigator.onLine,
             currentTimeline: 0,
             propertyList: [],
             formErrors: [],
@@ -80,19 +84,85 @@ export default{
                 this.placeholder.properties = {}
             }
             this.setProps();
+        },
+        internet(newvalue, oldvalue){
+            if(newvalue){
+                this.store.snackbar.add({
+                    message: "Connected to internet!",
+                    severity: "success"
+                });
+                if(!this.processing){
+                    this.loading = {
+                        continue: false,
+                        save: false,
+                    }
+                }
+            }
+            else{
+                this.store.snackbar.add({
+                    message: "No internet connection!",
+                    severity: "warning"
+                });
+                this.loading = {
+                    continue: true,
+                    save: true,
+                }
+            }
         }
     },
     methods:{
+        getLastPathWithoutExtension(url) {
+            // Remove query parameters and hash fragment
+            const cleanUrl = url.split(/[?#]/)[0];
+
+            // Get the last path segment
+            const segments = cleanUrl.split('/');
+            const lastSegment = segments[segments.length - 1];
+
+            // Remove file extension
+            const fileName = lastSegment.split('.')[0];
+
+            return fileName;
+        },
         onFileChange(e) {
             const files = e.target.files;
             for(const file of files){
                 if((file.type === 'image/png' || file.type === 'image/jpeg') && file.size < 5242880 && this.form.photos.length <= 12){
-                    this.uploadPhoto(file);
+                    this.uploadPhoto(file,e.target);
                 }
             }
         },
         deleteFile(pos){
-            (pos < this.form.photos.length && pos > -1) && this.form.photos.splice(pos,1);
+            let photo = this.form.photos[pos];
+            this.form.photos[pos] = '';
+
+            this.store.snackbar.add({
+                message: "Removing photo!",
+                severity: "info"
+            });
+            const url = "/deletephoto";
+            const formData = {
+                public_id: this.getLastPathWithoutExtension(photo)
+            };
+            router.post(url, formData,
+            {
+                onSuccess: (res) => {
+                    (pos < this.form.photos.length && pos > -1) && this.form.photos.splice(pos,1);
+                    this.store.snackbar.add({
+                        message: "Photo Deleted!",
+                        severity: "warning"
+                    });
+                },
+                onError: (err) => {
+                    this.form.photos[pos] = photo;
+                    this.store.snackbar.add({
+                        message: "Could not delete photo!",
+                        severity: "warning"
+                    });
+                },
+                preserveScroll: true
+            },
+            );
         },
         back(){
             if(this.currentTimeline >= this.timelines.length){
@@ -265,8 +335,11 @@ export default{
                             message: "Redirecting to Plans page!",
                             severity: "success"
                         });
-                        window.location = "/subscriptions";
+                        setTimeout(() => {
+                            window.location = "/subscriptions";
+                        },2000);
                     }
+                    this.processing = false;
                     this.currentTimeline += 2;
                     this.loading.continue = false;
                 },
@@ -275,12 +348,13 @@ export default{
                         message: err.message,
                         severity: "warning"
                     });
+                    this.processing = false;
                     this.loading.continue = false;
                 },
             },
             );
         },
-        uploadPhoto(file){
+        uploadPhoto(file,input){
             this.store.snackbar.add({
                 message: "Uploading photos!",
                 severity: "info"
@@ -302,9 +376,11 @@ export default{
         },
         gallery(boost=false,edit=false){
             this.loading.continue = true;
+            this.processing = true;
             if (this.checkForRequiredFields('gallery')) {
                 if(this.form.photos.length < 3){
                     this.loading.continue = false;
+                    this.processing = false;
                     this.store.snackbar.add({
                         message: "Please upload up to three photos!",
                         severity: "warning"
@@ -320,6 +396,7 @@ export default{
                     message: "Please images for your advert!",
                     severity: "info"
                 });
+                this.processing = false;
                 this.loading.continue = false;
             }
         },
@@ -341,6 +418,9 @@ export default{
                 state: this.advert.state,
                 properties: this.advert.properties
             }
+        },
+        status(value){
+            console.log(value);
         }
     },
     mounted(){
@@ -366,6 +446,7 @@ export default{
     <Preloader/>
     <SnackBar/>
     <Navbar/>
+    <InternetChecker v-model:status="internet"/>
     <section class="w-full max-h-[calc(100vh-60px)] overflow-y-auto relative top-[60px] min-h-[calc(100vh-60px)]">
         <nav class="lg:hidden w-full h-[60px] flex items-center justify-between px-2 bg-white fixed left-0 top-0 shadow z-50">
             <button @click="back">
@@ -524,7 +605,7 @@ export default{
                         </div>
                         <draggable class="w-full grid grid-cols-3 lg:grid-cols-2 gap-2 lg:gap-3" tag="div" v-model="form.photos" item-key="name">
                             <template #item="{ element: image, index: key }">
-                                <div
+                                <div v-show="image"
                                     :style="`background-image: url(${image});`"
                                     class="h-[100px] lg:h-[130px] relative rounded-lg bg-no-repeat bg-cover bg-center flex-shrink-0 group lg:cursor-grab"
                                     >

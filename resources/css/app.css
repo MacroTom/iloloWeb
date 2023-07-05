@@ -46,6 +46,10 @@ body{
     background: #555;
 }
 
+.gradient1{
+    background: linear-gradient(257.51deg,#f2fcfe 44.07%,#deeff3);
+}
+
 .p-tabview-panels{
     @apply px-0 !important
 }

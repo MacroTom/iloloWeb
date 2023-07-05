@@ -24,7 +24,7 @@ export default{
                 status: { value: null, matchMode: FilterMatchMode.EQUALS },
                 verified: { value: null, matchMode: FilterMatchMode.EQUALS }
             },
-            selectedUser: null,
+            selectedAdvert: null,
             current_page: null,
             search: '',
         }
@@ -45,15 +45,15 @@ export default{
             });
         },
         onRowSelect(evt){
-            this.selectedUser = evt.data;
-            var id = this.selectedUser.id;
-            router.get(`advert/${id}`, {},
-            {
-                onError: (err) => {
-                    this.$toast.add({ severity: 'error', summary: 'Error!', detail: err.message, life: 3000 });
-                }
-            }
-            );
+            // this.selectedAdvert = evt.data;
+            // var id = this.selectedAdvert.id;
+            // router.get(`advert/${id}`, {},
+            // {
+            //     onError: (err) => {
+            //         this.$toast.add({ severity: 'error', summary: 'Error!', detail: err.message, life: 3000 });
+            //     }
+            // }
+            // );
         },
         onRowUnselect(evt){
         },
@@ -91,6 +91,19 @@ export default{
         },
         clearSearch(){
             !this.search && this.gotoPage(1);
+        },
+        handleAction(id,action){
+            router.post(`advert/${id}?action=${action}`, {},
+            {
+                onSuccess: (res) => {
+                    this.$toast.add({ severity: 'success', summary: 'Successful', detail: res.props.flash.message, life: 3000 });
+                },
+                onError: (err) => {
+                    this.$toast.add({ severity: 'error', summary: 'Error!', detail: err.message, life: 3000 });
+                },
+                preserveScroll: true
+            }
+            );
         }
     },
     mounted(){
@@ -110,7 +123,7 @@ export default{
             <div class="p-4 card lg:p-5">
                 <h5>Adverts</h5>
                 <DataTable
-                    v-model:selection="selectedUser"
+                    v-model:selection="selectedAdvert"
                     :value="adverts?.data ? adverts?.data : adverts"
                     class="p-datatable-gridlines"
                     dataKey="id"
@@ -136,11 +149,12 @@ export default{
                         </div>
                     </template>
                     <template #empty> No adverts found. </template>
-                    <Column header="Actions" style="min-width: 10rem">
+                    <Column header="Actions" style="min-width: 13rem">
                         <template #body="{data}">
                             <div class="p-buttonset">
-                                <Button icon="pi pi-pencil" size="small" @click="updateModal(this,data)"/>
-                                <Button icon="pi pi-trash" size="small" severity="danger" @click="deleteCategory(this,data.id)"/>
+                                <Button @click="handleAction(data.id,'approve')" :disabled="data.status === 'closed' || data.status === 'active'" icon="pi pi-thumbs-up" size="small" severity="success"/>
+                                <Button icon="pi pi-eye" size="small"/>
+                                <Button @click="handleAction(data.id,'reject')" :disabled="data.status === 'closed'" icon="pi pi-thumbs-down" size="small" severity="danger"/>
                             </div>
                         </template>
                     </Column>

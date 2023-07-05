@@ -42,6 +42,7 @@ export default{
                 title: '',
                 price: 0,
                 discount: 0,
+                duration: 0,
                 properties: {
                     count: 1,
                     autorenew: null,
@@ -64,10 +65,11 @@ export default{
                 { title: 'Email Promotion' }
             ],
             icons: [
-                {title: 'Free', class: 'bx-shopping-bag', count: 1, autorenew: null, sms: false, badge: null, links: false},
+                {title: 'Free', class: 'bx-cookie', count: 1, autorenew: null, sms: false, badge: null, links: false},
                 {title: 'Regular', class: 'bx-trending-up', count: 5, autorenew: 24, sms: false, badge: null, links: false},
-                {title: 'Premium', class: 'bx-badge-check', count: 20, autorenew: 12, sms: true, badge: 'VIP', links: false},
-                {title: 'Diamond', class: 'bx-diamond', count: 50, autorenew: 3, sms: true, badge: 'VIP+', links: true}
+                {title: 'Premium', class: 'bx-crown', count: 20, autorenew: 12, sms: true, badge: 'Premium', links: false},
+                {title: 'Gold', class: 'bx-trophy', count: 50, autorenew: 6, sms: true, badge: 'Gold', links: true},
+                {title: 'Diamond', class: 'bx-diamond', count: 80, autorenew: 3, sms: true, badge: 'Diamond', links: true},
             ],
             category_types: [
                 {title: 'Land & Properties', value: 'L'},
@@ -77,6 +79,11 @@ export default{
             bools: [
                 {title: 'No', value: false},
                 {title: 'Yes', value: true},
+            ],
+            durations: [
+                {title: '1 Month', value: 1},
+                {title: '3 Months', value: 3},
+                {title: '6 Months', value: 6}
             ],
             activeTab: 0,
         }
@@ -164,6 +171,7 @@ export default{
                 title: '',
                 price: 0,
                 discount: 0,
+                duration: 0,
                 properties: {
                     count: 1,
                     autorenew: null,
@@ -200,6 +208,7 @@ export default{
                             title: '',
                             price: 0,
                             discount: 0,
+                            duration: 0,
                             properties: {
                                 count: 1,
                                 autorenew: null,
@@ -234,6 +243,7 @@ export default{
                 title: data.title,
                 price: data.price,
                 discount: data.discount,
+                duration: data.duration,
                 properties: data.properties,
                 category_type: data.category_type
             }
@@ -251,6 +261,7 @@ export default{
                         title: '',
                         price: 0,
                         discount: 0,
+                        duration: 0,
                         properties: {
                             count: 1,
                             autorenew: null,
@@ -371,6 +382,11 @@ export default{
                             {{ data.discount }}%
                         </template>
                     </Column>
+                    <Column field="duration" header="Duration" style="min-width: 8rem">
+                        <template #body="{ data }">
+                            {{ data.duration  }} {{ data.duration > 1 ? 'Months' : 'Month' }}
+                        </template>
+                    </Column>
                     <Column field="status" header="Status">
                         <template #body="{ data }">
                             <span :class="'customer-badge status-' + (data.status === 'active'? 'qualified' : 'unqualified')">{{ data.status }}</span>
@@ -435,12 +451,18 @@ export default{
                                 <InputNumber v-model="form.discount" :min="0" suffix="%" :useGrouping="false" inputId="integeronly" />
                                 <small id="values-help">Discount should be in <strong>Percentage</strong>! If no Discount, leave as 0%.</small>
                             </div>
-                        </TabPanel>
-                        <TabPanel header="Additional details">
                             <div class="flex gap-2 mb-2 flex-column">
                                 <div class="flex flex-column gap-2 mb-2">
                                     <label for="title">Category Type*</label>
                                     <Dropdown v-model="form.category_type" :options="category_types" optionLabel="title" optionValue="value" placeholder="" class="w-full" />
+                                </div>
+                            </div>
+                        </TabPanel>
+                        <TabPanel header="Additional details">
+                            <div class="flex gap-2 mb-2 flex-column">
+                                <div class="flex flex-column gap-2 mb-2">
+                                    <label for="title">Duration*</label>
+                                    <Dropdown v-model="form.duration" :options="durations" optionLabel="title" optionValue="value" placeholder="" class="w-full" />
                                 </div>
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">
@@ -512,12 +534,18 @@ export default{
                                 <InputNumber v-model="form.discount" :min="0" suffix="%" :useGrouping="false" inputId="integeronly" />
                                 <small id="values-help">Discount should be in <strong>Percentage</strong>! If no Discount, leave as 0%.</small>
                             </div>
-                        </TabPanel>
-                        <TabPanel header="Additional details">
                             <div class="flex gap-2 mb-2 flex-column">
                                 <div class="flex flex-column gap-2 mb-2">
                                     <label for="title">Category Type*</label>
                                     <Dropdown v-model="form.category_type" :options="category_types" optionLabel="title" optionValue="value" placeholder="" class="w-full" />
+                                </div>
+                            </div>
+                        </TabPanel>
+                        <TabPanel header="Additional details">
+                            <div class="flex gap-2 mb-2 flex-column">
+                                <div class="flex flex-column gap-2 mb-2">
+                                    <label for="title">Duration*</label>
+                                    <Dropdown v-model="form.duration" :options="durations" optionLabel="title" optionValue="value" placeholder="" class="w-full" />
                                 </div>
                             </div>
                             <div class="flex gap-2 mb-2 flex-column">

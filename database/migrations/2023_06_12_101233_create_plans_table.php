@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('title');
             $table->double('price');
             $table->unsignedInteger('discount')->default(0);
+            $table->unsignedInteger('duration');
             $table->text('properties');
             $table->enum('status',['active','disabled'])->default('active');
             $table->timestamps();

@@ -9,197 +9,6 @@ export const store = reactive({
             { href: '/logout', icon: 'bx-exit', name: 'Logout', method: 'post' }
         ]
     },
-    profiletabs: [
-        { title: 'Active', counter: 3, key: 'activetab', href: '/profile/ads/active' },
-        { title: 'Reviewing', counter: 1, key: 'reviewtab', href: '/profile/ads/review' },
-        { title: 'Manage Ads', counter: null, key: 'managetab', href: '#' },
-        { title: 'Closed Ads', counter: 3, key: 'closedtab', href: '/profile/ads/closed' }
-    ],
-    feedbacktabs: [
-        { title: 'Sent', counter: 1, key: 'sent', href: '/profile/feedback' },
-        { title: 'Received', counter: 3, key: 'received', href: '/profile/opinions' }
-    ],
-    profileoptions:[
-        { title: 'My Advert', icon: 'bxs-bar-chart-alt-2', counter: 3, href: '/profile' },
-        { title: 'My Messages', icon: 'bxs-chat', counter: null, href: '/profile/messages' },
-        { title: 'Subscriptions', icon: 'bxs-gift', counter: null, href: '/subscriptions' },
-        { title: 'Feedback', icon: 'bxs-comment', counter: null, href: '/profile/feedback' },
-        { title: 'Bookmark', icon: 'bxs-bookmark', counter: null, href: '/profile/bookmark' },
-        { title: 'FAQ', icon: 'bx-question-mark', counter: null, href: '/profile/faq' },
-        { title: 'Log out', icon: 'bxs-exit', counter: null, href: '/logout', method: 'post' },
-    ],
-    ads: {
-        active: [
-            {
-                id: 1,
-                name: 'Ferragamo shoe (Oxford)',
-                image: '/images/product.png',
-                price: '45,000',
-                status: 'active',
-                views: 100,
-                impression: 201
-            },
-            {
-                id: 2,
-                name: 'Ferragamo shoe (Oxford)',
-                image: '/images/product.png',
-                price: '45,000',
-                status: 'active',
-                views: 100,
-                impression: 201
-            },
-            {
-                id: 3,
-                name: 'Ferragamo shoe (Oxford)',
-                image: '/images/product.png',
-                price: '45,000',
-                status: 'active',
-                views: 100,
-                impression: 201
-            },
-        ],
-        review: [
-            {
-                id: 1,
-                name: 'Ferragamo shoe (Oxford)',
-                image: '/images/product.png',
-                price: '45,000',
-                status: 'review',
-                views: 100,
-                impression: 201
-            },
-        ],
-        closed: [
-            {
-                id: 1,
-                name: 'Ferragamo shoe (Oxford)',
-                image: '/images/product.png',
-                price: '45,000',
-                status: 'closed',
-                views: 100,
-                impression: 201
-            },
-            {
-                id: 2,
-                name: 'Ferragamo shoe (Oxford)',
-                image: '/images/product.png',
-                price: '45,000',
-                status: 'closed',
-                views: 100,
-                impression: 201
-            },
-            {
-                id: 3,
-                name: 'Ferragamo shoe (Oxford)',
-                image: '/images/product.png',
-                price: '45,000',
-                status: 'closed',
-                views: 100,
-                impression: 201
-            },
-        ],
-    },
-    feeds:{
-        sent:[
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2022',
-                text: 'Great customer service and good product quality'
-            },
-        ],
-        received:[
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2020',
-                text: 'Great customer service and good product quality',
-                position: 'left'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2021',
-                text: 'Great customer service and good product quality',
-                position: 'right'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2022',
-                text: 'Great customer service and good product quality',
-                position: 'left'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2021',
-                text: 'Great customer service and good product quality',
-                position: 'right'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2022',
-                text: 'Great customer service and good product quality',
-                position: 'left'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2021',
-                text: 'Great customer service and good product quality',
-                position: 'right'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2022',
-                text: 'Great customer service and good product quality',
-                position: 'left'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2021',
-                text: 'Great customer service and good product quality',
-                position: 'right'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2022',
-                text: 'Great customer service and good product quality',
-                position: 'left'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2021',
-                text: 'Great customer service and good product quality',
-                position: 'right'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2022',
-                text: 'Great customer service and good product quality',
-                position: 'left'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2021',
-                text: 'Great customer service and good product quality',
-                position: 'right'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2022',
-                text: 'Great customer service and good product quality',
-                position: 'left'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2021',
-                text: 'Great customer service and good product quality',
-                position: 'right'
-            },
-            {
-                avatar: null, user: 'John Doe', reaction: '&#x1F60A;',
-                date: '10/12/2022',
-                text: 'Great customer service and good product quality',
-                position: 'left'
-            },
-        ]
-    },
     profilelinks: [
         {
             href: '/profile/ads',
@@ -287,4 +96,21 @@ export const store = reactive({
         this.setFormScreen('options')
         action && this.setFormAction(action)
     },
+    messages: [],
+    history: '',
+    scrollToBottom(){
+        setTimeout(()=>{
+            this.history.scrollTop = this.history.scrollHeight
+        }, 0)
+    },
+    chatWindow: false,
+    chatWindowPage: 'Chat',
+    gotoWindow(page='Chat'){
+        this.chatWindow = true
+        this.chatWindowPage = page
+    },
+    toggleChatWindow(page=null){
+        this.chatWindow = !this.chatWindow
+        page && (this.chatWindowPage = page)
+    }
 })

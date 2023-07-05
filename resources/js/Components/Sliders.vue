@@ -13,13 +13,13 @@ export default{
                     title: 'Post Adverts',
                     body: 'Share your product with a large audience.',
                     link: '/postad',
-                    src: '/images/banner_1.png'
+                    src: '/images/banners/Banners-2.png'
                 },
                 {
                     title: 'Sales Made Easy',
                     body: 'Increase your sales by posting adverts.',
                     link: '/postad',
-                    src: '/images/banner_3.png'
+                    src: '/images/banners/Banners-3.png'
                 }
             ],
         }
@@ -42,13 +42,13 @@ export default{
         <slide v-for="(image,index) in images" :key="index">
             <Link :href="image?.link ? image?.link : '#'" class="w-full h-full relative flex items-center">
                 <img class="object-cover w-full h-full rounded-lg lg:rounded-none" :src="image?.src" :alt="`banner_${index+1}`"/>
-                <div class="w-full h-full absolute left-0 top-0 bg-[#1895B0]/40 lg:bg-blue-600/10 rounded-lg">
+                <!-- <div class="w-full h-full absolute left-0 top-0 bg-[#1895B0]/40 lg:bg-blue-600/10 rounded-lg">
                     <div class="w-full h-full flex flex-col justify-center gap-y-2 lg:gap-y-4 items-start px-4 lg:px-12 lg:y-6">
                         <h1 class="text-lg md:text-2xl lg:text-3xl font-bold text-slate-50 text-left font-Inter">{{ image?.title }}</h1>
                         <p class="font-medium text-sm lg:text-lg text-left font-Inter text-slate-800">{{ image?.body }}</p>
                         <Link :href="image?.link ? image?.link : '#'" class="button primary">Get Started</Link>
                     </div>
-                </div>
+                </div> -->
             </Link>
         </slide>
 

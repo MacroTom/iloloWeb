@@ -60,6 +60,16 @@ class User extends Authenticatable
         return $this->hasMany(Advert::class);
     }
 
+    public function advertBelongsToUser($id){
+        $adverts = $this->adverts;
+        if($adverts){
+            if($adverts->where('id', $id)->count()){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function bookmarks(): HasMany
     {
         return $this->hasMany(Bookmark::class)->latest();

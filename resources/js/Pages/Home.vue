@@ -15,6 +15,7 @@ import Advert from '../Components/Advert.vue';
 import HeroSection from '../Components/HeroSection.vue';
 import Sliders from '../Components/Sliders.vue';
 import SnackBar from '../Components/SnackBar.vue';
+import ChatWindow from '../Components/ChatWindow.vue';
 export default {
     props:{
         adverts: Array,
@@ -23,23 +24,24 @@ export default {
         location: Object
     },
     components:{
-        Heading,
-        Head,
-        Link,
-        Categorysidebar,
-        Bottomnavigationbar,
-        Banner,
-        Product,
-        Category,
-        Footer,
-        FormTab,
-        Navbar,
-        Preloader,
-        Advert,
-        HeroSection,
-        Sliders,
-        SnackBar
-    },
+    Heading,
+    Head,
+    Link,
+    Categorysidebar,
+    Bottomnavigationbar,
+    Banner,
+    Product,
+    Category,
+    Footer,
+    FormTab,
+    Navbar,
+    Preloader,
+    Advert,
+    HeroSection,
+    Sliders,
+    SnackBar,
+    ChatWindow
+},
     data(){
         return {
             store
@@ -58,6 +60,7 @@ export default {
     <!-- <Heading/> -->
     <Preloader/>
     <SnackBar/>
+    <ChatWindow/>
     <Navbar bg="bg-transparent" scroll border="border-0"/>
     <section class="w-full relative left-0 top-0">
         <HeroSection/>
@@ -101,10 +104,14 @@ export default {
                     <Banner class="w-2/3"/> -->
                     <Sliders/>
                     <section class="lg:col-start-3 lg:col-end-4 shadow-md rounded-lg">
-                        <img class="object-cover w-full h-full rounded-lg" src="/images/banner_5.png" alt="banner_5"/>
+                        <Link href="#">
+                            <img class="object-cover w-full h-full rounded-lg" src="/images/banners/Banners-1.png" alt="banner_1"/>
+                        </Link>
                     </section>
                     <section class="lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 shadow-md rounded-lg">
-                        <img class="object-cover w-full h-full rounded-lg" src="/images/banner_2.png" alt="banner_2"/>
+                        <Link href="#">
+                            <img class="object-cover w-full h-full rounded-lg" src="/images/banners/Banners.png" alt="banner_2"/>
+                        </Link>
                     </section>
                 </div>
                 <div class="py-3 mb-3 text-xl font-semibold lg:mt-4">
@@ -114,12 +121,6 @@ export default {
                     <Product v-for="(advert,index) in special"
                     :advert="advert"
                     :key="index"/>
-                    <!-- <Product :advert="{}"/>
-                    <Product :advert="{}"/>
-                    <Product :advert="{}"/>
-                    <Product :advert="{}"/>
-                    <Product :advert="{}"/>
-                    <Product :advert="{}"/> -->
                 </div>
                 <div class="py-3 mb-3 text-xl font-semibold">
                     Trending ads

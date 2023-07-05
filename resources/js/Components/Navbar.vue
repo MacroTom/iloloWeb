@@ -4,6 +4,7 @@ import DropDownList from './DropDownList.vue';
 import axios from 'axios';
 import { store } from '../store.js';
 import FormTab from './Form.vue';
+import Pusher from './Pusher.vue';
 export default{
     props:{
         bg: {
@@ -22,7 +23,8 @@ export default{
     components:{
         Link,
         DropDownList,
-        FormTab
+        FormTab,
+        Pusher
     },
     data(){
         return{
@@ -82,14 +84,14 @@ nav *{
     @apply font-Inter
 }
 .nav-links{
-    @apply flex lg:flex flex-col gap-2 lg:flex-row lg:gap-6
+    @apply h-full flex lg:flex flex-col gap-2 lg:flex-row lg:gap-6
 }
 .nav-links > li,
 .nav-links li a{
     @apply font-Inter lg:text-sm text-slate-700
 }
 .nav-links > li{
-    @apply p-2
+    @apply p-2 flex flex-col lg:flex-row lg:items-center
 }
 .nav-links li.divider{
     @apply my-4 w-full h-[1px] border-t !important
@@ -103,8 +105,8 @@ nav *{
 .child-links{
     @apply flex-col gap-y-2
 }
-.child-links li{
-    @apply flex flex-col
+.child-links > li{
+    @apply flex flex-col !important
 }
 .child-links li a{
     @apply font-Inter font-semibold text-sm text-[#1895B0]
@@ -147,6 +149,8 @@ nav *{
 </style>
 
 <template>
+    <!-- Pusher -->
+    <Pusher :auth="$page.props.auth"/>
     <!-- For larger screens -->
     <FormTab/>
     <nav :class="background +' '+ border +' '+ styles" class="hidden lg:flex w-full h-[60px] lg:px-8 xl:px-28 items-center fixed z-[500] top-0 left-0">
@@ -177,11 +181,11 @@ nav *{
         </div>
         <div v-else class="flex items-center gap-6">
             <div class="flex items-center gap-6">
-                <div class="menu-buttons">
+                <div @click="store.toggleChatWindow('Alerts')" class="menu-buttons">
                     <i class='bx bx-bell'></i>
                     <div class="pulse"></div>
                 </div>
-                <div class="menu-buttons">
+                <div @click="store.toggleChatWindow('Chat')" class="menu-buttons">
                     <i class='bx bx-message-dots'></i>
                     <div class="pulse"></div>
                 </div>
@@ -281,7 +285,7 @@ nav *{
                             </div>
                             <div @click="toggleSubMenu(index)"><i :class="selectedSubcategory === index ? 'bx-chevron-up' : 'bx-chevron-down'" class='bx text-2xl text-[#1895B0]'></i></div>
                         </div>
-                        <ul :class="selectedSubcategory === index ? 'block' : 'hidden'" class="inner-links">
+                        <ul :class="selectedSubcategory === index ? 'flex' : 'hidden'" class="inner-links">
                             <li v-for="(category,index) in category.subcategories" :key="index">
                                 <div class="flex justify-between w-full">
                                     <div class="flex flex-col">

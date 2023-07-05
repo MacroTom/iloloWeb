@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AdvertController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\TransactionController;
 
 /*
@@ -28,6 +29,10 @@ Route::get('/migrate', function(){
     Artisan::call('migrate:fresh --force');
     dd('Migrate command ran');
 });
+Route::get('/seed', function(){
+    Artisan::call('db:seed --force');
+    dd('Seeding database');
+});
 
 Route::middleware('guest')->group(function(){
     Route::post('/register', [AccountController::class, 'store']);
@@ -45,6 +50,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/transaction/cancelled', [TransactionController::class, 'cancelTransaction']);
     Route::get('/postad', [AdvertController::class, 'index']);
     Route::post('/postad', [AdvertController::class, 'store']);
+    Route::post('/deletephoto', [AdvertController::class, 'deletePhoto']);
     Route::post('/plan/{id}/buy', [AdvertController::class, 'buyPlan']);
 
     Route::get('/profile', [AccountController::class, 'profile']);
@@ -56,7 +62,16 @@ Route::middleware('auth')->group(function(){
     Route::post('/profile/bookmarks/{id}/remove', [AccountController::class, 'removeBookmark']);
     Route::get('/profile/feedback', [AccountController::class, 'feedback']);
     Route::get('/profile/opinions', [AccountController::class, 'opinions']);
-    Route::get('/profile/messages', [AccountController::class, 'messages']);
+
+
+    Route::get('/profile/messages', [MessagesController::class, 'messages']);
+    Route::get('/profile/getusers', [MessagesController::class, 'getUsers']);
+    Route::get('/profile/getmessages', [MessagesController::class, 'getMessages']);
+    Route::get('/profile/getnotifications', [MessagesController::class, 'getNotifications']);
+    Route::post('/profile/sendmessage', [MessagesController::class, 'sendMessage']);
+
+
+
     Route::post('/logout', [AccountController::class, 'logout']);
 });
 
@@ -80,6 +95,7 @@ Route::prefix('admin')->group(function(){
         Route::get('/admins', [DashboardController::class, 'admins']);
 
         Route::get('/adverts', [DashboardController::class, 'adverts']);
+        Route::post('/advert/{id}', [DashboardController::class, 'handleAction']);
 
 
         Route::get('/plans', [DashboardController::class, 'plans']);

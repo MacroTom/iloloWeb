@@ -12,6 +12,7 @@ use App\Models\Subscription;
 use App\Services\PaystackService;
 use App\Traits\WriteError;
 use App\Traits\ApiResponse;
+use Cloudinary\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +21,8 @@ class AdvertController extends Controller
     use WriteError;
 
     public function index(Request $request){
-        if($request->query('edit')){
+        $user = User::find(Auth::user()->id);
+        if($request->query('edit') && $user->advertBelongsToUser($request->query('edit'))){
             $temp = Advert::find($request->query('edit'));
             $advert = [
                 'advert' => [
@@ -116,9 +118,23 @@ class AdvertController extends Controller
             return [
                 'source' => $photo
             ];
-        },array_reverse($request->photos)));
+        },$request->photos));
 
         return redirect()->back()->with('message', 'Advert has been created!');
+    }
+
+    public function deletePhoto(Request $request){
+        $request->validate([
+            'public_id' => 'required'
+        ]);
+        $result = cloudinary()->destroy($request->public_id);
+
+        if($result->headers['Status'][0] !== '200 OK')
+        return redirect()->back()->withErrors([
+            'message' => 'Could not delete photo!',
+        ]);
+        return redirect()->back()->with('message', 'Photo deleted!');
+
     }
 
     public function advert($id){
@@ -195,12 +211,16 @@ class AdvertController extends Controller
         // Calculate discount if any
         $amount = floor($plan->price - ($plan->price * ($plan->discount/100)));
 
+        // Calculate expiration time
+        $expiration = strtotime("+".$plan->duration.($plan->duration > 1 ? " months" : " month"));
+
         // create the subscription
         $subscription = Subscription::create([
             'plan_id' => $id,
             'user_id' => Auth::user()->id,
             'status' => 'pending',
-            'duration' => $request->duration
+            'duration' => $plan->duration,
+            'expires' => $expiration
         ]);
 
         // Get checkout URL

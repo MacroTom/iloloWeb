@@ -158,24 +158,9 @@ class AccountController extends Controller
         ]);
     }
     public function premium(){
+        $plans = Plan::all();
         return Inertia::render('Premium',[
-            'plancategories' => [
-                [
-                    'title' => 'Cars',
-                    'icon' => 'bx-car',
-                    'plans' => Plan::where('category_type', 'C')->get(),
-                ],
-                [
-                    'title' => 'Land & Property',
-                    'icon' => 'bx-home',
-                    'plans' => Plan::where('category_type', 'L')->get(),
-                ],
-                [
-                    'title' => 'Others',
-                    'icon' => 'bx-category',
-                    'plans' => Plan::where('category_type', 'O')->get(),
-                ],
-            ]
+            'plans' => $plans
         ]);
     }
 

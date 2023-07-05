@@ -2,6 +2,7 @@
 import { router } from '@inertiajs/vue3';
 import { store } from '../store';
 import FlatButton from './FlatButton.vue';
+import currency from 'currency.js';
 export default {
     components:{
         FlatButton
@@ -23,7 +24,9 @@ export default {
         }
     },
     methods:{
-
+        formatCurrency(value){
+            return currency(value, {separator: ',', symbol: '', precision: 0}).format();
+        }
     }
 }
 </script>
@@ -51,7 +54,7 @@ export default {
     @apply text-xs text-slate-700 font-Inter px-2 py-1 border border-slate-100 rounded-xl
 }
 .plan .pricing{
-    @apply mb-2 text-3xl
+    @apply mb-2 text-2xl
 }
 .plan .price{
     @apply tracking-tight font-semibold font-Inter
@@ -108,7 +111,7 @@ export default {
         <div class="pricing">
             <span class="text-slate-700">
                 <span v-if="price" class="currency">₦</span>
-                <span v-if="price && !discount" class="price">{{ price }}</span>
+                <span v-if="price && !discount" class="price">{{ formatCurrency(price) }}</span>
                 <span v-if="!price && !discount" class="price">Free</span>
                 <span v-if="discount" class="price">{{ Math.floor(price - (price * (discount/100))) }}</span>
                 <span v-if="discount" class="discount">{{ price }}</span>

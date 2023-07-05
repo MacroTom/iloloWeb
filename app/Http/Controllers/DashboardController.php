@@ -158,6 +158,36 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function handleAction($id,Request $request){
+        if(!$request->query('action')) return redirect()->back()->withErrors([
+            'message' => 'Not action supplied!.',
+        ]);
+
+        $advert = Advert::find($id);
+
+        if(!$advert) return redirect()->back()->withErrors([
+            'message' => 'Advert not found!.',
+        ]);
+
+        switch (strtolower($request->query('action'))) {
+            case 'approve':
+                $advert->status = 'active';
+                $advert->save();
+                return redirect()->back()->with('message','Advert approved!.');
+            break;
+            case 'reject':
+                $advert->status = 'closed';
+                $advert->save();
+                return redirect()->back()->with('message','Advert closed!.');
+            break;
+            default:
+                return redirect()->back()->withErrors([
+                    'message' => 'Invalid action!.',
+                ]);
+            break;
+        }
+    }
+
     public function properties(Request $request){
         if($request->query('q')){
             $this->search = $request->query('q');
@@ -355,15 +385,16 @@ class DashboardController extends Controller
             'title' => 'required|string',
             'price' => 'required',
             'discount' => 'required',
+            'duration' => 'required',
             'category_type' => 'required',
             'properties' => 'required'
         ]);
 
-        $result = Plan::where('title', $request->title)->where('category_type', $request->category_type)->count();
+        // $result = Plan::where('title', $request->title)->where('category_type', $request->category_type)->count();
 
-        if($result) return redirect()->back()->withErrors([
-            'message' => 'A Plan with that name already exist for the selected category!',
-        ]);
+        // if($result) return redirect()->back()->withErrors([
+        //     'message' => 'A Plan with that name already exist for the selected category!',
+        // ]);
 
         Plan::create([
             'tag' => $request->tag,
@@ -371,6 +402,7 @@ class DashboardController extends Controller
             'title' => $request->title,
             'price' => $request->price,
             'discount' => $request->discount,
+            'duration' => $request->duration,
             'category_type' => $request->category_type,
             'properties' => json_encode($request->properties)
         ]);
@@ -391,6 +423,7 @@ class DashboardController extends Controller
             'title' => $request->title,
             'price' => $request->price,
             'discount' => $request->discount,
+            'duration' => $request->duration,
             'category_type' => $request->category_type,
             'properties' => json_encode($request->properties)
         ]);
