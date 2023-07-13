@@ -96,7 +96,11 @@ export const store = reactive({
         this.setFormScreen('options')
         action && this.setFormAction(action)
     },
+    users: [],
+    selectedUser: null,
+    selectedAdvert: null,
     messages: [],
+    gettingMessages: true,
     history: '',
     scrollToBottom(){
         setTimeout(()=>{
@@ -105,6 +109,15 @@ export const store = reactive({
     },
     chatWindow: false,
     chatWindowPage: 'Chat',
+    chatWindowSection: 'user-list',
+    openChat(){
+        this.messages = [];
+        this.chatWindowSection = 'chat-area';
+    },
+    closeChat(){
+        this.chatWindowSection = 'user-list';
+        this.getUsers();
+    },
     gotoWindow(page='Chat'){
         this.chatWindow = true
         this.chatWindowPage = page
@@ -112,5 +125,64 @@ export const store = reactive({
     toggleChatWindow(page=null){
         this.chatWindow = !this.chatWindow
         page && (this.chatWindowPage = page)
-    }
+    },
+    getMessages(user,openWindow=false,advert=null){
+        this.gettingMessages = true;
+        this.selectedUser = user;
+        this.selectedAdvert = advert;
+        openWindow && this.toggleChatWindow();
+        openWindow && this.gotoWindow('Chat');
+        this.markMessagesAsSeen();
+        this.openChat();
+        axios.get('/profile/getmessages?user_id='+this.selectedUser.id)
+        .then(res => {
+            this.messages = res.data.messages;
+            this.gettingMessages = false;
+            this.scrollToBottom();
+        })
+        .catch(err => {
+            this.gettingMessages = false;
+            this.snackbar.add({
+                message: "Could not retrieved messages!",
+                severity: "warning"
+            });
+        })
+    },
+    getUsers(){
+        axios.get('/profile/getusers')
+        .then(res => {
+            this.users = res.data.users;
+        })
+        .catch(err => {
+            this.store.snackbar.add({
+                message: "Could not retrieved users!",
+                severity: "warning"
+            });
+        })
+    },
+    markMessagesAsSeen(){
+        axios.post('/profile/messages/markasseen', {
+            user_id: this.selectedUser.id
+        })
+        .then(res => {
+            this.getUsers();
+
+        })
+        .catch(err => {
+            // this.store.snackbar.add({
+            //     message: "Could not mark messages users!",
+            //     severity: "warning"
+            // });
+        })
+    },
+    playNotificationSound(){
+        let audio = new Audio('/audios/notification.mp3');
+        if(document.hidden){
+            audio.play();
+        }
+    },
+    notifications: [],
+    unseen_messages: 0,
+    unseen_notifications: 0,
+    pusher: null
 })

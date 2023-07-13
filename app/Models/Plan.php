@@ -30,4 +30,24 @@ class Plan extends Model
             get: fn($value) => json_decode($value)
         );
     }
+
+    public function max_ads(){
+        return $this->properties->count;
+    }
+
+    public function autoRenew(){
+        return $this->properties->autorenew;
+    }
+
+    public function smsAlert(){
+        return $this->properties->sms;
+    }
+
+    public function badge(){
+        return $this->properties->badge;
+    }
+
+    public function links(){
+        return $this->properties->links;
+    }
 }

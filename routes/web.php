@@ -1,6 +1,8 @@
 <?php
 
 use App\Actions\HandlePayment;
+use App\Actions\HandlePusher;
+use App\Actions\PusherAuth;
 use App\Actions\ResetPassword;
 use App\Actions\SendOTP;
 use Inertia\Inertia;
@@ -43,11 +45,8 @@ Route::middleware('guest')->group(function(){
 
 Route::get('/advert/{id}', [AdvertController::class, 'advert']);
 Route::get('/subscriptions', [AccountController::class, 'premium']);
-Route::post('/payment/webhook', [HandlePayment::class, 'handleWebhook']);
-Route::post('/payment/callback', [HandlePayment::class, 'handleCallback']);
 
-// Pusher presence webhook
-Route::post('/pusher/webhook/presence', [MessagesController::class, 'handleWebhook']);
+Route::get('/payment/callback', [HandlePayment::class, 'handleCallback']);
 
 Route::middleware('auth')->group(function(){
     Route::get('/transaction/cancelled', [TransactionController::class, 'cancelTransaction']);
@@ -55,11 +54,16 @@ Route::middleware('auth')->group(function(){
     Route::post('/postad', [AdvertController::class, 'store']);
     Route::post('/deletephoto', [AdvertController::class, 'deletePhoto']);
     Route::post('/plan/{id}/buy', [AdvertController::class, 'buyPlan']);
+    Route::post('/addreview', [AdvertController::class, 'addReview']);
 
     Route::get('/profile', [AccountController::class, 'profile']);
+    Route::post('/profile/uploadavatar', [AccountController::class, 'uploadAvatar']);
+    Route::post('/profile/updatepersonal', [AccountController::class, 'updatePersonal']);
+    Route::post('/profile/updatebusiness', [AccountController::class, 'updateBusiness']);
     Route::get('/profile/ads', [AccountController::class, 'active']);
     Route::get('/profile/ads/review', [AccountController::class, 'review']);
     Route::get('/profile/ads/closed', [AccountController::class, 'closed']);
+    Route::get('/profile/subscriptions', [AccountController::class, 'subscriptions']);
     Route::get('/profile/bookmarks', [AccountController::class, 'bookmarks']);
     Route::post('/profile/bookmarks/{id}/add', [AccountController::class, 'addBookmark']);
     Route::post('/profile/bookmarks/{id}/remove', [AccountController::class, 'removeBookmark']);
@@ -68,6 +72,7 @@ Route::middleware('auth')->group(function(){
 
 
     Route::get('/profile/messages', [MessagesController::class, 'messages']);
+    Route::post('/profile/messages/markasseen', [MessagesController::class, 'markAsSeen']);
     Route::get('/profile/getusers', [MessagesController::class, 'getUsers']);
     Route::get('/profile/getmessages', [MessagesController::class, 'getMessages']);
     Route::get('/profile/getnotifications', [MessagesController::class, 'getNotifications']);

@@ -12,6 +12,13 @@ export default{
             store,
         }
     },
+    computed:{
+        currentProps(){
+            if(store.chatWindowPage === 'Chat'){
+                return { auth: this.$page.props.auth }
+            }
+        }
+    }
 }
 </script>
 
@@ -51,7 +58,7 @@ export default{
                 </button>
             </nav>
             <div class="content">
-                <component :is="store.chatWindowPage"></component>
+                <component :is="store.chatWindowPage" v-bind="currentProps"/>
             </div>
         </section>
     </aside>

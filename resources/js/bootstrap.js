@@ -28,7 +28,7 @@ window.Echo = new Echo({
 });
 
 window.Env = {
-    debug: import.meta.env.VITE_PUSHER_DEBUG,
+    debug: import.meta.env.PUSHER_DEBUG,
     pusher: {
         key: import.meta.env.VITE_PUSHER_APP_KEY,
         options: {
@@ -36,16 +36,8 @@ window.Env = {
             encrypted: true,
         }
     },
-    pusherAuthEndpoint: import.meta.env.VITE_PUSHER_AUTH_ENDPOINT,
+    pusherAuthEndpoint: import.meta.env.PUSHER_AUTH_ENDPOINT,
+    chatChannel: import.meta.env.PUSHER_CHAT_CHANNEL,
+    presenceChannel: import.meta.env.PUSHER_STATUS_CHANNEL,
+    alertsChannel: import.meta.env.PUSHER_ALERTS_CHANNEL,
 }
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: import.meta.env.VITE_PUSHER_APP_KEY,
-//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-//     wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-//     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
-//     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
-//     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
-//     enabledTransports: ['ws', 'wss'],
-// });

@@ -142,6 +142,62 @@ class AccountController extends Controller
         return redirect()->back()->with('message', 'Bookmark removed!');
     }
 
+    public function subscriptions(){
+        $user = User::find(Auth::user()->id);
+        $subscriptions = $user->subscriptions()->with('plan')->latest()->get();
+        return Inertia::render('Subscriptions',[
+            'subscriptions' => $subscriptions
+        ]);
+    }
+
+    public function uploadAvatar(Request $request){
+        $request->validate([
+            'avatar' => 'required',
+        ]);
+        $user = User::find(Auth::user()->id);
+        $user->update([
+            'avatar' => $request->avatar
+        ]);
+        return redirect()->back()->with('message', 'Avatar uploaded!');
+    }
+
+    public function updatePersonal(Request $request){
+        $request->validate([
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
+            'phone' => 'required',
+            'email' => 'required|email',
+        ]);
+
+        $user = User::find(Auth::user()->id);
+
+        $user->update([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'facebook_link' => $request->facebook_link,
+            'twitter_link' => $request->twitter_link,
+            'instagram_link' => $request->instagram_link,
+            'website_link' => $request->website_link,
+        ]);
+        return redirect()->back()->with('message', 'Profile updated!');
+    }
+
+    public function updateBusiness(Request $request){
+        $request->validate([
+            'business_name' => 'required|string',
+        ]);
+
+        $user = User::find(Auth::user()->id);
+
+        $user->update([
+            'business_name' => $request->business_name,
+            'about_business' => $request->about_business,
+        ]);
+        return redirect()->back()->with('message', 'Profile updated!');
+    }
+
     public function feedback(){
         return Inertia::render('Feedback',[
 
@@ -171,6 +227,6 @@ class AccountController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')->with('message', 'Logout successful');
+        return redirect()->back()->with('message', 'Logout successful');
     }
 }

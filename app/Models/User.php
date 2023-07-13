@@ -34,8 +34,8 @@ class User extends Authenticatable
         'instagram_link',
         'website_link',
         'subscriptions',
-        'presence',
         'password',
+        'email_verified_at',
         'remember_token',
     ];
 
@@ -102,6 +102,17 @@ class User extends Authenticatable
         }
     }
 
+    public function getSubsciptionInCategory($category){
+        if($this->hasSubscriptionInCategory($category)){
+            return $this->activeSubscriptions()->first();
+        }
+        return false;
+    }
+
+    public function getActiveAdsInCategory($category){
+        $this->adverts->where('category_id', $category)->where('status', 'active');
+    }
+
     public function canShowLinks(){
         $active = $this->activeSubscriptions();
         if($active){
@@ -119,6 +130,11 @@ class User extends Authenticatable
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 
     // public function showLinks($category){

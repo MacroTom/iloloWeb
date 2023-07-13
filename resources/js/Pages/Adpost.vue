@@ -344,8 +344,9 @@ export default{
                     this.loading.continue = false;
                 },
                 onError: (err) => {
+                    console.log(err);
                     this.store.snackbar.add({
-                        message: err.message,
+                        message: 'Could not post advert!',
                         severity: "warning"
                     });
                     this.processing = false;
@@ -363,7 +364,7 @@ export default{
             const formData = new FormData();
             formData.append("file", file);
             formData.append("upload_preset", "ybqvdxtk");
-            axios.post(url, formData)
+            axios.create().post(url, formData)
             .then((res)=>{
                 this.form.photos.push(res.data.secure_url);
             })
@@ -411,17 +412,26 @@ export default{
                 negotiable: this.advert.negotiable,
                 description: this.advert.description,
                 photos: this.advert.photos,
-                properties: this.advert.properties
+                properties: this.convertArrayToObject(this.advert.properties,'property','value')
             }
             this.placeholder = {
                 category: this.advert.subcategory.title,
                 state: this.advert.state,
-                properties: this.advert.properties
+                properties: this.form.properties
             }
         },
         status(value){
             console.log(value);
-        }
+        },
+        convertArrayToObject(arr, key, value) {
+            const initialValue = {};
+            return arr.reduce((obj, item) => {
+              return {
+                ...obj,
+                [item[key]]: item[value],
+              };
+            }, initialValue);
+        },
     },
     mounted(){
         const body = document.body;

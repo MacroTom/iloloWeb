@@ -44,6 +44,13 @@ class HandleInertiaRequests extends Middleware
             'auth.user' => fn () => $request->user()
                 ? $request->user()->only('id', 'firstname', 'lastname', 'email', 'phone', 'avatar', 'status')
                 : null,
+            'env' => [
+                'pusherDebug' => fn() => env('PUSHER_DEBUG'),
+                'pusherAuthEndpoint' => fn() => env('PUSHER_AUTH_ENDPOINT'),
+                'chatChannel' => fn () => env('PUSHER_CHAT_CHANNEL'),
+                'presenceChannel' => fn() => env('PUSHER_STATUS_CHANNEL'),
+                'alertsChannel' => fn() => env('PUSHER_ALERTS_CHANNEL'),
+            ]
         ]);
     }
 }

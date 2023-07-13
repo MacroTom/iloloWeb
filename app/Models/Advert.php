@@ -39,15 +39,30 @@ class Advert extends Model
         return $this->belongsTo(Subcategory::class);
     }
 
-    protected function properties(): Attribute
+    public function properties(): HasMany
     {
-        return new Attribute(
-            get: fn($value) => json_decode($value)
-        );
+        return $this->hasMany(AdvertProperty::class);
     }
+
+    public function views(): HasMany
+    {
+        return $this->hasMany(View::class);
+    }
+
+    // protected function properties(): Attribute
+    // {
+    //     return new Attribute(
+    //         get: fn($value) => json_decode($value)
+    //     );
+    // }
 
     public function bookmarks(): HasMany
     {
         return $this->hasMany(Bookmark::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 }

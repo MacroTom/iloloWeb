@@ -16,12 +16,15 @@ import HeroSection from '../Components/HeroSection.vue';
 import Sliders from '../Components/Sliders.vue';
 import SnackBar from '../Components/SnackBar.vue';
 import ChatWindow from '../Components/ChatWindow.vue';
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+import 'vue3-carousel/dist/carousel.css';
 export default {
     props:{
         adverts: Array,
         special: Array,
         categories: Array,
-        location: Object
+        location: Object,
+        tester: Object
     },
     components:{
     Heading,
@@ -40,11 +43,12 @@ export default {
     HeroSection,
     Sliders,
     SnackBar,
-    ChatWindow
+    ChatWindow,
+    Carousel, Slide, Pagination, Navigation,
 },
     data(){
         return {
-            store
+            store,
         }
     },
     mounted(){
@@ -60,9 +64,8 @@ export default {
     <!-- <Heading/> -->
     <Preloader/>
     <SnackBar/>
-    <ChatWindow/>
     <Navbar bg="bg-transparent" scroll border="border-0"/>
-    <section class="w-full relative left-0 top-0">
+    <section class="w-full relative left-0 top-0 bg-gray-100">
         <HeroSection/>
         <!-- <div class="hidden lg:flex bg-[#1895B0] lg:bg-[#A2BDC3] w-full h-[60px] lg:h-[230px] border-transparent justify-center items-center">
             <img width="300" class="hidden lg:block" src="/images/person1.png" alt="person">
@@ -117,18 +120,20 @@ export default {
                 <div class="py-3 mb-3 text-xl font-semibold lg:mt-4">
                     Special offers
                 </div>
-                <div class="w-full flex gap-2 p-2 overflow-x-auto scrollbar-hide">
-                    <Product v-for="(advert,index) in special"
-                    :advert="advert"
-                    :key="index"/>
+                <div class="w-full flex overflow-x-scroll gap-3 lg:gap-5 scrollbar-hide py-4">
+                    <Advert class="w-[calc(50%-8px)] md:w-[calc(33.3%-8px)] lg:w-[calc(20%-20px)] xl:w-[calc(16.6%-20px)]" v-for="(advert,index) in special"
+                        :advert="advert"
+                        :key="index"
+                    />
                 </div>
-                <div class="py-3 mb-3 text-xl font-semibold">
+                <div class="py-3 mb-3 text-xl font-semibold mt-2">
                     Trending ads
                 </div>
-                <div class="w-full flex flex-wrap pb-[16px] lg:pb-0">
-                    <Product v-for="(advert,index) in adverts"
+                <div class="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-5 pb-[16px] lg:pb-0">
+                    <Advert class="w-full" v-for="(advert,index) in adverts"
                     :advert="advert"
-                    :key="index"/>
+                    :key="index"
+                    />
                 </div>
             </section>
         </main>

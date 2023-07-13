@@ -24,8 +24,6 @@ return new class extends Migration
             $table->boolean('negotiable')->default(false);
             $table->string('state');
             $table->string('lga');
-            $table->unsignedBigInteger('views')->default(0);
-            $table->text('properties');
             $table->enum('status',['active','review','closed'])->default('review');
             $table->timestamps();
         });

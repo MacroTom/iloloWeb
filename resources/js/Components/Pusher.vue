@@ -9,17 +9,32 @@ export default{
             store,
             csrfToken: null,
             pusher: null,
-            channel: null,
-            user_id: null
+            chatChannel: null,
+            presenceChannel: null,
+            alertsChannel: null,
+            user_id: null,
+            message_data: null
         }
     },
     watch: {
         auth(){
             if(this.auth?.user){
                 this.user_id = this.auth?.user?.id;
-                this.pusherInit();
                 this.pusherSubscribe();
             }
+            else{
+                this.pusherUnsubscribe();
+            }
+        },
+        message_data(){
+            setTimeout(() => {
+                store.messages.push(this.message_data.message);
+                store.scrollToBottom();
+                store.getUsers();
+                if(store.selectedUser && store.selectedUser.id === this.message_data.message.from.id){
+                    store.markMessagesAsSeen();
+                }
+            }, 1000);
         }
     },
     methods:{
@@ -36,41 +51,87 @@ export default{
 
             return null;
         },
+        getCsrfToken(){
+            return this.getCookie("XSRF-TOKEN");
+        },
         pusherInit(){
-            if(window.Env.debug === 'true'){
+            if(this.$page.props.env.pusherDebug === true || this.$page.props.env.pusherDebug === 'true'){
                 Pusher.logToConsole = true;
             }
-            this.pusher = new Pusher(window.Env.pusher.key, {
+            store.pusher = new Pusher(window.Env.pusher.key, {
                 encrypted: window.Env.pusher.options.encrypted,
                 cluster: window.Env.pusher.options.cluster,
-                authEndpoint: window.Env.pusherAuthEndpoint,
+                authEndpoint: this.$page.props.env.pusherAuthEndpoint,
                 auth: {
                     headers: {
-                        "X-CSRF-TOKEN": this.csrfToken,
+                        "Accept": "application/json"
                     },
                 },
             });
         },
         pusherSubscribe(){
             if(this.user_id){
-                this.channel = this.pusher.subscribe("chat." + this.user_id);
-                this.channel.bind('new-message', (data) => {
-                    // handle new-message event
-                    store.messages.push(data.payload.message);
-                    store.scrollToBottom();
-                });
+                let env = this.$page.props.env;
+                this.chatChannel = store.pusher.subscribe(env.chatChannel + "." + this.user_id);
+                this.alertsChannel = store.pusher.subscribe(env.alertsChannel + "." + this.user_id);
+                this.presenceChannel = store.pusher.subscribe(env.presenceChannel);
+                this.pusherListener();
             }
         },
+        pusherUnsubscribe(){
+            this.chatChannel?.unsubscribe();
+            this.alertsChannel?.unsubscribe();
+            this.presenceChannel?.unsubscribe();
+        },
+        pusherListener(){
+            let timeout = 3000;
+            this.chatChannel.bind('new-message', (data) => {
+                // handle new-message event
+                this.message_data = data;
+            });
+
+            this.chatChannel.bind('new-alert', (data) => {
+                // handle new-alert event
+                // store.notifications.push(data.notification);
+            });
+
+            this.presenceChannel.bind('pusher:member_added', (member) => {
+                // handle member_added event
+                setTimeout(() => {
+                    store.getUsers();
+                }, timeout);
+                if(store.selectedUser && store.selectedUser.id === parseInt(member.id)){
+                    store.selectedUser.presence = "online";
+                }
+            });
+
+            this.presenceChannel.bind('pusher:member_removed', (member) => {
+                // handle member_removed event
+                setTimeout(() => {
+                    store.getUsers();
+                }, timeout);
+                if(store.selectedUser && store.selectedUser.id === parseInt(member.id)){
+                    store.selectedUser.presence = "offline";
+                }
+            });
+        }
     },
     beforeMount(){
-        this.csrfToken = this.getCookie("XSRF-TOKEN");
-    },
-    mounted(){
+        this.pusherInit();
         if(this.auth?.user){
             this.user_id = this.auth?.user?.id;
-            this.pusherInit();
             this.pusherSubscribe();
         }
+        else{
+            this.pusherUnsubscribe();
+        }
+    },
+    beforeDestroy() {
+        this.chatChannel?.unsubscribe();
+        this.alertsChannel?.unsubscribe();
+        this.presenceChannel?.unsubscribe();
+        store.pusher?.disconnect();
+        store.pusher = null;
     }
 }
 </script>

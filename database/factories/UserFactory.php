@@ -18,14 +18,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        // return [
-        //     'name' => fake()->name(),
-        //     'email' => fake()->unique()->safeEmail(),
-        //     'email_verified_at' => now(),
-        //     'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        //     'remember_token' => Str::random(10),
-        // ];
-        $role = random_int(0,1);
+        $role = 0;
         $gender = random_int(0,1) === 1 ? 'female' : 'male';
         $password = 'test1234';
         return [
@@ -34,6 +27,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'role' => $role,
+            'avatar' => $this->faker->imageUrl(640, 640, 'people', true),
             'password' => Hash::make($password),
         ];
     }

@@ -5,6 +5,8 @@ import axios from 'axios';
 import { store } from '../store.js';
 import FormTab from './Form.vue';
 import Pusher from './Pusher.vue';
+import ChatWindow from './ChatWindow.vue';
+import Notifications from './Notifications.vue';
 export default{
     props:{
         bg: {
@@ -24,7 +26,9 @@ export default{
         Link,
         DropDownList,
         FormTab,
-        Pusher
+        Pusher,
+        ChatWindow,
+        Notifications
     },
     data(){
         return{
@@ -151,8 +155,13 @@ nav *{
 <template>
     <!-- Pusher -->
     <Pusher :auth="$page.props.auth"/>
-    <!-- For larger screens -->
+    <!-- ChatWindow -->
+    <ChatWindow/>
+    <!-- Notifications -->
+    <Notifications :auth="$page.props.auth"/>
+    <!-- Authentication form -->
     <FormTab/>
+    <!-- For larger screens -->
     <nav :class="background +' '+ border +' '+ styles" class="hidden lg:flex w-full h-[60px] lg:px-8 xl:px-28 items-center fixed z-[500] top-0 left-0">
         <div class="mr-10">
             <Link href="/">
@@ -182,12 +191,12 @@ nav *{
         <div v-else class="flex items-center gap-6">
             <div class="flex items-center gap-6">
                 <div @click="store.toggleChatWindow('Alerts')" class="menu-buttons">
-                    <i class='bx bx-bell'></i>
-                    <div class="pulse"></div>
+                    <i :class="store.unseen_notifications ? 'bx-tada' : ''" class='bx bx-bell'></i>
+                    <div v-if="store.unseen_notifications" class="pulse"></div>
                 </div>
                 <div @click="store.toggleChatWindow('Chat')" class="menu-buttons">
-                    <i class='bx bx-message-dots'></i>
-                    <div class="pulse"></div>
+                    <i :class="store.unseen_messages ? 'bx-tada' : ''" class='bx bx-message-dots'></i>
+                    <div v-if="store.unseen_messages" class="pulse"></div>
                 </div>
             </div>
             <div class="w-10 h-10 flex justify-center items-center rounded-lg active:bg-[#e6eff1] relative" v-click-away="hidePopup">
@@ -213,6 +222,10 @@ nav *{
                         </li>
                         <li>
                             <Link href="/profile/bookmarks">Bookmarks</Link>
+                            <i class='bx bx-chevron-right'></i>
+                        </li>
+                        <li>
+                            <Link href="/profile/subscriptions">Subscriptions</Link>
                             <i class='bx bx-chevron-right'></i>
                         </li>
                     </ul>
@@ -258,6 +271,10 @@ nav *{
                                 <Link href="/profile/bookmarks">Bookmarks</Link>
                                 <i class='bx bx-chevron-right'></i>
                             </li>
+                            <li>
+                                <Link href="/profile/subscriptions">Subscriptions</Link>
+                                <i class='bx bx-chevron-right'></i>
+                            </li>
                         </ul>
                         <div class="w-full p-3 rounded-b-lg hover:bg-slate-50">
                             <Link method="post" as="button" href="/logout">Log out</Link>
@@ -269,7 +286,7 @@ nav *{
                 </div>
             </div>
         </div>
-        <ul :class="menuOpen ? 'left-0' : '-left-full'" class="nav-links w-full min-h-[calc(100vh-60px)] max-h-[calc(100vh-60px)] px-4 pt-4 bg-white absolute top-[60px] transition-[left] duration-200 ease-in">
+        <ul :class="menuOpen ? 'left-0' : '-left-full'" class="nav-links w-full min-h-[calc(100vh-60px)] max-h-[calc(100vh-60px)] overflow-y-auto scrollbar-hide px-4 pt-4 bg-white absolute top-[60px] transition-[left] duration-200 ease-in">
             <li><Link class="font-semibold" href="/">Home</Link></li>
             <li>
                 <div class="flex items-center w-full">

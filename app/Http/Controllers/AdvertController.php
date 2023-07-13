@@ -6,14 +6,16 @@ use App\Models\Plan;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Advert;
+use App\Models\Review;
 use App\Models\Category;
 use App\Models\Property;
-use App\Models\Subscription;
-use App\Services\PaystackService;
 use App\Traits\WriteError;
-use App\Traits\ApiResponse;
 use Cloudinary\Cloudinary;
+use App\Traits\ApiResponse;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
+use App\Services\PaystackService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class AdvertController extends Controller
@@ -92,11 +94,13 @@ class AdvertController extends Controller
                 'price' => $request->price,
                 'negotiable' => $request->negotiable,
                 'description' => $request->description,
-                'properties' => json_encode($request->properties)
             ],$adType));
 
             foreach ($advert->images as $image) {
                 $image->delete();
+            }
+            foreach ($advert->properties as $property) {
+                $property->delete();
             }
         }
         else{
@@ -109,7 +113,6 @@ class AdvertController extends Controller
                 'price' => $request->price,
                 'negotiable' => $request->negotiable,
                 'description' => $request->description,
-                'properties' => json_encode($request->properties)
             ],$adType));
 
         }
@@ -119,6 +122,15 @@ class AdvertController extends Controller
                 'source' => $photo
             ];
         },$request->photos));
+
+        $advert->properties()->createMany(
+            array_map(function($value, $key){
+                return [
+                    'property' => $key,
+                    'value' => $value
+                ];
+            },$request->properties, array_keys($request->properties))
+        );
 
         return redirect()->back()->with('message', 'Advert has been created!');
     }
@@ -139,7 +151,7 @@ class AdvertController extends Controller
 
     public function advert($id){
         if(Advert::find($id)->user->canShowLinks()){
-            $advert = Advert::where('id', $id)->with('images')->get();
+            $advert = Advert::where('id', $id)->with('images','category','subcategory','properties')->get();
             $user = $advert->user->makeVisible([
                 'facebook_link',
                 'twitter_link',
@@ -147,12 +159,19 @@ class AdvertController extends Controller
                 'website_link'
             ]);
         }
-        $advert = Advert::where('id', $id)->with('images')->first();
-        $user = $advert->user;
+        else{
+            $advert = Advert::where('id', $id)->with('images','category','subcategory','properties')->first();
+            $user = $advert->user;
+        }
+
+        $advert->reviews = $advert->reviews()->latest()->with('user')->get();
+
+        // check if user is loggedin
+        $user->canReview = Auth::check() ? (Review::where('advert_id', $id)->where('user_id', Auth::user()->id)->count() === 0 ? true : false) : false;
 
         return Inertia::render('Product', [
             'advert' => $advert,
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -249,5 +268,22 @@ class AdvertController extends Controller
         return redirect()->back()->with('data', [
             'checkout_url' => $checkout_url
         ]);
+    }
+
+    // Add Review
+    public function addReview(Request $request){
+        $request->validate([
+            'rating' => 'required',
+            'review' => 'required'
+        ]);
+
+        $user = User::find(Auth::user()->id);
+
+        $user->reviews()->create([
+            'rating' => $request->rating,
+            'review' => $request->review
+        ]);
+
+        return redirect()->back()->with('message', 'Review added!');
     }
 }

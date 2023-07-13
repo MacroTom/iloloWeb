@@ -25,6 +25,8 @@ return new class extends Migration
             $table->text('twitter_link')->nullable();
             $table->text('instagram_link')->nullable();
             $table->text('website_link')->nullable();
+            $table->string('business_name')->nullable();
+            $table->text('about_business')->nullable();
             $table->enum('status', ['active','disabled'])->default('active');
             $table->enum('presence', ['online', 'offline'])->default('offline');
             $table->tinyInteger('role')->default(0);

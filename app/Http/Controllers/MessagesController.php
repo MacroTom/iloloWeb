@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\NewMessage as NewMessageNotification;
+use App\Services\PusherService;
 
 class MessagesController extends Controller
 {
@@ -80,7 +81,7 @@ class MessagesController extends Controller
         return Message::where('from_id', $user_id)->where('to_id', Auth::user()->id)->where('seen', false)->count();
     }
 
-    public function sendMessage(Request $request){
+    public function sendMessage(Request $request, PusherService $pusherService){
         // validate request
         $request->validate([
             'message' => 'required|string',
@@ -97,7 +98,7 @@ class MessagesController extends Controller
 
         // Notify user of new message
         $user = User::find($request->to_id);
-        $user->notify(new NewMessageNotification($request->from_id));
+        $user->notify(new NewMessageNotification(Auth::user()->id));
 
         $payload = [
             'message' => [
@@ -112,24 +113,10 @@ class MessagesController extends Controller
         ];
 
         // broadcast new message
-        event(new NewMessageEvent($payload));
-
-        // $lastmessage = $this->getLastMessageQuery($request->to_id);
+        $pusherService->trigger(env('PUSHER_CHAT_CHANNEL').".".$request->to_id, 'new-message', $payload);
 
         // return response
-        // return redirect()->back()->with('data', [
-        //     'message' => [
-        //         'id' => $message->id,
-        //         'message' => $message->message,
-        //         'advert' => $message->advert()?->only(['id','title','price','images']),
-        //         'seen' => $message->seen,
-        //         'created_at' => $message->created_at,
-        //         'from' => $message->from()->only(['id','firstname','lastname','avatar']),
-        //         'to' => $message->to()->only(['id','firstname','lastname','avatar']),
-        //     ]
-        // ]);
-
-        return response($payload);
+        return redirect()->back()->with('data', $payload);
     }
 
     // Get messages between two users
@@ -148,17 +135,35 @@ class MessagesController extends Controller
         ]);
     }
 
+    // Mark messages as seen
+    public function markAsSeen(Request $request){
+        $request->validate([
+            'user_id' => 'required|integer'
+        ]);
+        // mark messages as seen
+        $messages = Message::Where('from_id', $request->user_id)
+                ->where('to_id', Auth::user()->id)
+                ->where('seen', false);
+
+        if($messages) $messages->update(['seen' => true]);
+
+        // return response
+        return response([
+            'seen' => true
+        ]);
+    }
+
     // get Notifications
-    public function getNotifications(Request $request){
+    public function getNotifications(){
         // get notifications
-        $notifications = Auth::user()->notifications;
+        $notifications = User::find(Auth::user()->id)->notifications;
 
         // return response
         return response([
             'notifications' => $notifications->map(function($notification){
                 $notification->from = $notification->data['from_id'];
-                $notification->from = $notification->from()->only(['id','firstname','lastname','avatar']);
-                return $notification->only(['id','type','data','read_at','from']);
+                $notification->from = User::find($notification->from)?->only(['id','firstname','lastname','avatar']);
+                return $notification->only(['id','data','read_at','from']);
             })
         ]);
     }

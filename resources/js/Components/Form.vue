@@ -172,12 +172,16 @@ export default{
                         <Link v-if="store.formaction === 'signin'" @click="store.setFormAction('register')"
                             href="#"
                             class="font-semibold text-[#1895B0] text-sm"
+                            preserve-state
+                            preserve-scroll
                             >
                             Register
                         </Link>
                         <Link v-else @click="store.setFormAction('signin')"
                             href="#"
                             class="font-semibold text-[#1895B0] text-sm"
+                            preserve-state
+                            preserve-scroll
                             >
                             Sign in
                         </Link>

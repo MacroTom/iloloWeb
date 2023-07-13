@@ -12,6 +12,11 @@ class Image extends Model
 
     protected $guarded = [];
 
+    protected $hidden = [
+        'imageable_type',
+        'imageable_id',
+    ];
+
     protected function imageable(): MorphTo
     {
         return $this->morphTo();

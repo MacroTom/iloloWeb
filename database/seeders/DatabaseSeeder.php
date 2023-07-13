@@ -13,16 +13,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(100)->create();
+        // Admin seeders
+        $this->call(AdminSeeder::class);
 
-        \App\Models\User::factory()->create([
-            'firstname' => 'Okeoghene',
-            'lastname' => 'Esieba',
-            'email' => 'okecoc1@gmail.com',
-            'phone' => '09078533114',
-            'avatar' => 'https://lineone.piniastudio.com/images/avatar/avatar-12.jpg',
-            'role' => 1,
-            'password' => Hash::make('test1234'),
-        ]);
+        // User seeders
+        // $this->call(UserSeeder::class);
+
+        // Category seeders
+        $this->call(CategorySeeder::class);
+
+        // Subcategory seeders
+        $this->call(SubcategorySeeder::class);
+
+        // Advert seeders
+        $this->call(AdvertSeeder::class);
+
+        // Plan seeders
+        $this->call(PlanSeeder::class);
     }
 }

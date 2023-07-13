@@ -38,8 +38,12 @@ export default{
                 <span class="text-sm">My adverts</span>
             </Link>
             <Link href="/profile/bookmarks" :class="$page.url === '/profile/bookmarks' ? 'bg-slate-50' : ''" class="w-[250px] flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg mb-1">
-            <i class='bx bx-bookmark text-xl text-slate-600'></i>
+                <i class='bx bx-bookmark text-xl text-slate-600'></i>
                 <span class="text-sm">Bookmarks</span>
+            </Link>
+            <Link href="/profile/subscriptions" :class="$page.url === '/profile/subscriptions' ? 'bg-slate-50' : ''" class="w-[250px] flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg mb-1">
+                <i class='bx bx-credit-card text-xl text-slate-600'></i>
+                <span class="text-sm">Subscriptions</span>
             </Link>
             <Link href="/logout" method="post" as="button" class="w-[250px] flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg mb-1">
                 <i class='bx bx-log-out text-xl text-slate-600'></i>
@@ -49,14 +53,17 @@ export default{
 
         <aside class="lg:hidden mt-2">
             <div class="flex pb-2">
-                <Link href="/profile" :class="$page.url === '/profile' ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-sm font-Inter font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
+                <Link href="/profile" :class="$page.url === '/profile' ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-xs font-Inter font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
                     <span>Profile</span>
                 </Link>
-                <Link href="/profile/ads" :class="$page.url.startsWith('/profile/ads') ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-sm font-Inter text-slate-600 font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
-                    <span>My adverts</span>
+                <Link href="/profile/ads" :class="$page.url.startsWith('/profile/ads') ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-xs font-Inter text-slate-600 font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
+                    <span>Adverts</span>
                 </Link>
-                <Link href="/profile/bookmarks" :class="$page.url === '/profile/bookmarks' ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-sm font-Inter text-slate-600 font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
+                <Link href="/profile/bookmarks" :class="$page.url === '/profile/bookmarks' ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-xs font-Inter text-slate-600 font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
                     <span>Bookmarks</span>
+                </Link>
+                <Link href="/profile/subscriptions" :class="$page.url === '/profile/subscriptions' ? 'text-[#1895B0] font-semibold border-[#1895B0]' : 'text-slate-500'" class="text-xs font-Inter text-slate-600 font-medium border-b-2 flex items-center gap-1 py-3 px-2 flex-1">
+                    <span>Subscriptions</span>
                 </Link>
             </div>
         </aside>

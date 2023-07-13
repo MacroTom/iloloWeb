@@ -56,12 +56,12 @@ export default{
         </div>
         <div class="left"
             >
-            <div v-if="chat?.advert">
+            <div class="max-w-[180px] lg:max-w-xs" v-if="chat?.advert">
                 <div class="flex justify-between mb-2">
                     <small class="max-w-[90px] text-xs overflow-hidden whitespace-nowrap text-ellipsis bg-[#1895B0] text-white px-2 rounded-lg">{{ chat?.advert?.title }}</small>
                     <small class="text-xs overflow-hidden whitespace-nowrap text-ellipsis bg-[#1895B0] text-white px-2 rounded-lg">{{ formatCurrency(chat?.advert?.price) }}</small>
                 </div>
-                <div class="w-full flex flex-col h-[200px]">
+                <div class="w-full flex flex-col h-[180px] lg:h-[200px]">
                     <img class="object-cover w-full h-full rounded-lg" :src="chat?.advert?.images[0].source" alt="attachment">
                 </div>
             </div>
@@ -77,12 +77,12 @@ export default{
     <section v-else class="flex mb-4 justify-end">
         <div class="right"
             >
-            <div v-if="chat?.advert">
+            <div class="max-w-[180px] lg:max-w-xs" v-if="chat?.advert">
                 <div class="flex justify-between mb-2">
                     <small class="max-w-[90px] text-xs overflow-hidden whitespace-nowrap text-ellipsis bg-slate-50 text-[#1895B0] px-2 rounded-lg">{{ chat?.advert?.title }}</small>
                     <small class="text-xs overflow-hidden whitespace-nowrap text-ellipsis bg-slate-50 text-[#1895B0] px-2 rounded-lg">{{ formatCurrency(chat?.advert?.price) }}</small>
                 </div>
-                <div class="w-full flex flex-col h-[200px]">
+                <div class="w-full flex flex-col h-[180px] lg:h-[200px]">
                     <img class="object-cover w-full h-full rounded-lg" :src="chat?.advert?.images[0].source" alt="attachment">
                 </div>
             </div>
