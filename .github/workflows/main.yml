@@ -26,7 +26,11 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           server: ${{ secrets.FTP_SERVER }}
+<<<<<<< HEAD
           port: 22 # default is 22
+=======
+          port: 21 # default is 22
+>>>>>>> e3e7b8c75592ba5a08311c93fce46bf417d8739f
 
 
           # will put all file under this path
